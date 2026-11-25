@@ -1,0 +1,568 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ================= GLOBAL PRIMITIVES =================
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedSignedIn() {
+      return isSignedIn() &&
+        request.auth.token.email_verified == true &&
+        request.auth.token.email is string;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isOwner(uid) {
+      return isVerifiedSignedIn() && request.auth.uid == uid;
+    }
+
+    // Bootstrapped primary director (strictly requires email_verified == true)
+    function isBootstrapAdmin() {
+      return isVerifiedSignedIn() &&
+        request.auth.token.email.lower() == 'fatifati23.mt@gmail.com';
+    }
+
+    function isSlotAdmin(slotId) {
+      return exists(/databases/$(database)/documents/admins/$(slotId)) &&
+        get(/databases/$(database)/documents/admins/$(slotId)).data.email == request.auth.token.email.lower();
+    }
+
+    function isAdmin() {
+      return isBootstrapAdmin() || (
+        isVerifiedSignedIn() && (
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+          isSlotAdmin('admin_2') ||
+          isSlotAdmin('admin_3')
+        )
+      );
+    }
+
+    function isTeacher() {
+      return isAdmin() ||
+        (isVerifiedSignedIn() && exists(/databases/$(database)/documents/teachers/$(request.auth.uid)));
+    }
+
+    function isNonEmptyString(val, maxLen) {
+      return val is string && val.size() >= 1 && val.size() <= maxLen;
+    }
+
+    function isValidEmail(val) {
+      return val is string && val.size() >= 3 && val.size() <= 120 && val.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
+    }
+
+    function isNonNegInt(val, maxVal) {
+      return val is int && val >= 0 && val <= maxVal;
+    }
+
+    // ================= VALIDATION BLUEPRINTS =================
+    function isValidUserProfile(data, userId) {
+      return data.keys().hasAll(['uid', 'displayName', 'email', 'role', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly([
+          'uid', 'displayName', 'email', 'role',
+          'firstName', 'lastName', 'birthDate', 'ccp', 'baridi', 'phone', 'level', 'stream', 'subject',
+          'createdAt', 'updatedAt'
+        ]) &&
+        isValidId(data.uid) &&
+        data.uid == userId &&
+        isNonEmptyString(data.displayName, 100) &&
+        isValidEmail(data.email) &&
+        data.role in ['student', 'parent', 'teacher', 'admin'] &&
+        (!('firstName' in data) || isNonEmptyString(data.firstName, 60)) &&
+        (!('lastName' in data) || isNonEmptyString(data.lastName, 60)) &&
+        (!('birthDate' in data) || (data.birthDate is string && data.birthDate.size() >= 4 && data.birthDate.size() <= 20)) &&
+        (!('ccp' in data) || (data.ccp is string && data.ccp.size() <= 60)) &&
+        (!('baridi' in data) || (data.baridi is string && data.baridi.size() <= 60)) &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 30)) &&
+        (!('level' in data) || (data.level is string && data.level.size() <= 60)) &&
+        (!('stream' in data) || (data.stream is string && data.stream.size() <= 80)) &&
+        (!('subject' in data) || (data.subject is string && data.subject.size() <= 80)) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidPlatformSettings(data) {
+      return data.keys().hasAll([
+          'ccp', 'baridi',
+          'pricePrivate', 'priceSmall', 'priceGroup',
+          'privateReg', 'privatePres', 'smallReg', 'smallPres', 'groupReg', 'groupPres',
+          'updatedBy', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'ccp', 'baridi',
+          'pricePrivate', 'priceSmall', 'priceGroup',
+          'annualPricePrivate', 'annualPriceSmall', 'annualPriceGroup',
+          'privateReg', 'privatePres', 'smallReg', 'smallPres', 'groupReg', 'groupPres',
+          'updatedBy', 'updatedAt'
+        ]) &&
+        data.ccp is string && data.ccp.size() >= 3 && data.ccp.size() <= 60 &&
+        data.baridi is string && data.baridi.size() >= 3 && data.baridi.size() <= 60 &&
+        isNonNegInt(data.pricePrivate, 500000) &&
+        isNonNegInt(data.priceSmall, 500000) &&
+        isNonNegInt(data.priceGroup, 500000) &&
+        (!('annualPricePrivate' in data) || isNonNegInt(data.annualPricePrivate, 5000000)) &&
+        (!('annualPriceSmall' in data) || isNonNegInt(data.annualPriceSmall, 5000000)) &&
+        (!('annualPriceGroup' in data) || isNonNegInt(data.annualPriceGroup, 5000000)) &&
+        isNonNegInt(data.privateReg, 10000) &&
+        isNonNegInt(data.privatePres, 10000) &&
+        isNonNegInt(data.smallReg, 10000) &&
+        isNonNegInt(data.smallPres, 10000) &&
+        isNonNegInt(data.groupReg, 100000) &&
+        isNonNegInt(data.groupPres, 100000) &&
+        isValidId(data.updatedBy) &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidFinanceSummary(data) {
+      return data.keys().hasAll([
+          'teacherCcp', 'approvedGrossTotal', 'approvedReceiptsCount', 'updatedBy', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'teacherCcp', 'approvedGrossTotal', 'approvedReceiptsCount',
+          'platformSharePct', 'teacherSharePct',
+          'updatedBy', 'updatedAt'
+        ]) &&
+        data.teacherCcp is string && data.teacherCcp.size() >= 3 && data.teacherCcp.size() <= 60 &&
+        isNonNegInt(data.approvedGrossTotal, 100000000) &&
+        isNonNegInt(data.approvedReceiptsCount, 1000000) &&
+        (
+          (!('platformSharePct' in data) && !('teacherSharePct' in data)) ||
+          (
+            'platformSharePct' in data &&
+            'teacherSharePct' in data &&
+            isNonNegInt(data.platformSharePct, 100) &&
+            isNonNegInt(data.teacherSharePct, 100) &&
+            data.platformSharePct + data.teacherSharePct == 100
+          )
+        ) &&
+        isValidId(data.updatedBy) &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidAdminMember(data, adminId) {
+      return data.keys().hasAll(['uid', 'name', 'email', 'isPrimary', 'addedBy', 'createdAt']) &&
+        data.keys().hasOnly(['uid', 'name', 'email', 'isPrimary', 'addedBy', 'createdAt']) &&
+        isValidId(data.uid) &&
+        data.uid == adminId &&
+        isNonEmptyString(data.name, 100) &&
+        isValidEmail(data.email) &&
+        data.email == data.email.lower() &&
+        data.isPrimary is bool &&
+        isValidId(data.addedBy) &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidTeacherMember(data, teacherId) {
+      return data.keys().hasAll(['uid', 'name', 'subject', 'addedBy', 'createdAt']) &&
+        data.keys().hasOnly(['uid', 'name', 'subject', 'addedBy', 'createdAt']) &&
+        isValidId(data.uid) &&
+        data.uid == teacherId &&
+        isNonEmptyString(data.name, 100) &&
+        isNonEmptyString(data.subject, 80) &&
+        isValidId(data.addedBy) &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidLesson(data) {
+      return data.keys().hasAll([
+          'title', 'level', 'stream', 'subject', 'method', 'link',
+          'fileName', 'allowDownload', 'time', 'teacherName',
+          'authorId', 'visibility', 'createdAt', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'title', 'level', 'stream', 'subject', 'method', 'link',
+          'fileName', 'allowDownload', 'time', 'teacherName',
+          'authorId', 'visibility', 'createdAt', 'updatedAt'
+        ]) &&
+        isNonEmptyString(data.title, 160) &&
+        isNonEmptyString(data.level, 60) &&
+        isNonEmptyString(data.stream, 80) &&
+        isNonEmptyString(data.subject, 80) &&
+        data.method in ['Zoom', 'Telegram', 'Google Meet', 'YouTube', 'WhatsApp', 'دروس مسجلة'] &&
+        data.link is string && data.link.size() >= 4 && data.link.size() <= 300 &&
+        isNonEmptyString(data.fileName, 160) &&
+        data.allowDownload is bool &&
+        isNonEmptyString(data.time, 60) &&
+        isNonEmptyString(data.teacherName, 100) &&
+        isValidId(data.authorId) &&
+        data.visibility == 'public' &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidReceipt(data) {
+      return data.keys().hasAll([
+          'ownerId', 'studentName', 'submittedBy', 'level', 'stream', 'subject',
+          'sectionType', 'amount', 'method', 'ref', 'fileName', 'previewUrl',
+          'isPdf', 'status', 'date', 'createdAt', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'ownerId', 'studentName', 'submittedBy', 'level', 'stream', 'subject',
+          'sectionType', 'amount', 'method', 'ref', 'fileName', 'previewUrl',
+          'isPdf', 'status', 'date', 'createdAt', 'updatedAt'
+        ]) &&
+        isValidId(data.ownerId) &&
+        isNonEmptyString(data.studentName, 100) &&
+        data.submittedBy in ['تلميذ', 'ولي أمر'] &&
+        isNonEmptyString(data.level, 60) &&
+        isNonEmptyString(data.stream, 80) &&
+        isNonEmptyString(data.subject, 80) &&
+        data.sectionType in [
+          'قسم خاص فردي',
+          'قسم مجموعة مصغرة (8-10 تلاميذ)',
+          'قسم جماعي (عدد غير محدود)'
+        ] &&
+        data.amount is int && data.amount >= 1 && data.amount <= 5000000 &&
+        data.method in ['BaridiMob', 'CCP'] &&
+        data.ref is string && data.ref.size() >= 2 && data.ref.size() <= 60 &&
+        isNonEmptyString(data.fileName, 160) &&
+        data.previewUrl is string && data.previewUrl.size() >= 1 && data.previewUrl.size() <= 200000 &&
+        data.isPdf is bool &&
+        data.status in ['pending', 'approved', 'rejected'] &&
+        data.date is string && data.date.size() >= 4 && data.date.size() <= 20 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidCertificate(data) {
+      return data.keys().hasAll([
+          'recipient', 'recipientRole', 'reason', 'issuer', 'issuerId',
+          'date', 'visibility', 'createdAt'
+        ]) &&
+        data.keys().hasOnly([
+          'recipient', 'recipientRole', 'reason', 'issuer', 'issuerId',
+          'date', 'visibility', 'createdAt'
+        ]) &&
+        isNonEmptyString(data.recipient, 100) &&
+        data.recipientRole in ['تلميذ', 'أستاذ'] &&
+        data.reason is string && data.reason.size() >= 2 && data.reason.size() <= 240 &&
+        isNonEmptyString(data.issuer, 100) &&
+        isValidId(data.issuerId) &&
+        data.date is string && data.date.size() >= 4 && data.date.size() <= 20 &&
+        data.visibility == 'public' &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidRosterStudent(data) {
+      return data.keys().hasAll(['name', 'status', 'time', 'teacherId', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['name', 'status', 'time', 'teacherId', 'createdAt', 'updatedAt']) &&
+        isNonEmptyString(data.name, 100) &&
+        data.status in ['حاضر', 'غائب'] &&
+        isNonEmptyString(data.time, 20) &&
+        isValidId(data.teacherId) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidPayout(data) {
+      return data.keys().hasAll([
+          'teacherId', 'teacherName', 'amount', 'ccp', 'status', 'date', 'createdAt', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'teacherId', 'teacherName', 'amount', 'ccp', 'status', 'date', 'createdAt', 'updatedAt'
+        ]) &&
+        isValidId(data.teacherId) &&
+        isNonEmptyString(data.teacherName, 100) &&
+        data.amount is int && data.amount >= 1 && data.amount <= 10000000 &&
+        data.ccp is string && data.ccp.size() >= 3 && data.ccp.size() <= 60 &&
+        data.status in ['قيد التحويل', 'تم التحويل'] &&
+        data.date is string && data.date.size() >= 4 && data.date.size() <= 20 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    // ================= COLLECTION RULES =================
+
+    // 1. Users (Strict PII Isolation & Anti-Privilege-Escalation)
+    match /users/{userId} {
+      allow get: if isVerifiedSignedIn() && isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isBootstrapAdmin() || (isVerifiedSignedIn() && resource.data.uid == request.auth.uid);
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(userId) &&
+        isValidUserProfile(incoming(), userId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time && (
+          (isOwner(userId) && incoming().role in ['student', 'parent']) ||
+          (isBootstrapAdmin() && isOwner(userId) && incoming().role == 'admin') ||
+          isAdmin()
+        );
+
+      allow update: if isVerifiedSignedIn() &&
+        isValidId(userId) &&
+        isValidUserProfile(incoming(), userId) &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'role', 'displayName', 'firstName', 'lastName', 'birthDate', 'ccp', 'baridi', 'phone', 'level', 'stream', 'subject', 'updatedAt'
+          ])) ||
+          (isOwner(userId) && incoming().role == existing().role && incoming().diff(existing()).affectedKeys().hasOnly([
+            'displayName', 'firstName', 'lastName', 'birthDate', 'ccp', 'baridi', 'phone', 'level', 'stream', 'subject', 'updatedAt'
+          ]))
+        );
+
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+
+    // 2A. Public Platform Settings (Pricing, Admin CCP/BaridiMob, Occupancy Counters — ZERO sensitive teacher/user PII)
+    match /settings/platform {
+      allow get: if true;
+      allow list: if false;
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidPlatformSettings(incoming()) &&
+        incoming().updatedBy == request.auth.uid &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+
+      allow update: if isVerifiedSignedIn() &&
+        isValidPlatformSettings(incoming()) &&
+        incoming().updatedBy == request.auth.uid &&
+        incoming().updatedAt == request.time && (
+          // Action 1: Admin updates banking details, monthly/annual section prices, or occupancy counters
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'ccp', 'baridi', 'pricePrivate', 'priceSmall', 'priceGroup',
+            'annualPricePrivate', 'annualPriceSmall', 'annualPriceGroup',
+            'privateReg', 'privatePres', 'smallReg', 'smallPres', 'groupReg', 'groupPres',
+            'updatedBy', 'updatedAt'
+          ])) ||
+          // Action 2: Teacher updates attendance/enrollment counters only
+          (isTeacher() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'privateReg', 'privatePres', 'smallReg', 'smallPres', 'groupReg', 'groupPres',
+            'updatedBy', 'updatedAt'
+          ])) ||
+          // Action 3: Verified student/parent increments section enrollment by +1
+          (incoming().diff(existing()).affectedKeys().hasOnly(['privateReg', 'privatePres', 'updatedBy', 'updatedAt']) &&
+            incoming().privateReg == existing().privateReg + 1 &&
+            incoming().privatePres == existing().privatePres + 1 &&
+            incoming().privateReg <= 1) ||
+          (incoming().diff(existing()).affectedKeys().hasOnly(['smallReg', 'smallPres', 'updatedBy', 'updatedAt']) &&
+            incoming().smallReg == existing().smallReg + 1 &&
+            incoming().smallPres == existing().smallPres + 1 &&
+            incoming().smallReg <= 10) ||
+          (incoming().diff(existing()).affectedKeys().hasOnly(['groupReg', 'groupPres', 'updatedBy', 'updatedAt']) &&
+            incoming().groupReg == existing().groupReg + 1 &&
+            incoming().groupPres == existing().groupPres + 1)
+        );
+
+      allow delete: if false;
+    }
+
+    // 2B. Restricted Finance Summary (Teacher CCP & Confirmed Revenue — Teachers & Admins ONLY)
+    match /settings/finance {
+      allow get: if isVerifiedSignedIn() && isTeacher();
+      allow list: if false;
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidFinanceSummary(incoming()) &&
+        incoming().updatedBy == request.auth.uid &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+
+      allow update: if isVerifiedSignedIn() &&
+        isValidFinanceSummary(incoming()) &&
+        incoming().updatedBy == request.auth.uid &&
+        incoming().updatedAt == request.time && (
+          // Action 1: Admin updates revenue ledger totals, share percentages, or teacherCcp
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'teacherCcp', 'approvedGrossTotal', 'approvedReceiptsCount',
+            'platformSharePct', 'teacherSharePct',
+            'updatedBy', 'updatedAt'
+          ])) ||
+          // Action 2: Teacher updates their own teacherCcp ONLY (cannot modify revenue totals or share percentages!)
+          (isTeacher() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'teacherCcp', 'updatedBy', 'updatedAt'
+          ]))
+        );
+
+      allow delete: if false;
+    }
+
+    // 3. Admins Registry (Strict PII Isolation + Hard Max 3 Admins Cap: Primary + admin_2 + admin_3)
+    match /admins/{adminId} {
+      allow get: if isVerifiedSignedIn() && isValidId(adminId) && (isOwner(adminId) || isAdmin());
+      allow list: if isBootstrapAdmin() ||
+        (isVerifiedSignedIn() && resource.data.uid == request.auth.uid) ||
+        (isVerifiedSignedIn() && resource.data.email == request.auth.token.email.lower());
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(adminId) &&
+        isValidAdminMember(incoming(), adminId) &&
+        incoming().addedBy == request.auth.uid &&
+        incoming().createdAt == request.time && (
+          (isBootstrapAdmin() && adminId == request.auth.uid && incoming().isPrimary == true) ||
+          (isAdmin() && adminId in ['admin_2', 'admin_3'] && incoming().isPrimary == false)
+        );
+
+      allow update: if false;
+      allow delete: if isVerifiedSignedIn() && isValidId(adminId) && isAdmin() && existing().isPrimary == false;
+    }
+
+    // 4. Teachers Registry
+    match /teachers/{teacherId} {
+      allow get: if isVerifiedSignedIn() && isValidId(teacherId) && (isOwner(teacherId) || isAdmin());
+      allow list: if isBootstrapAdmin() || (isVerifiedSignedIn() && resource.data.uid == request.auth.uid);
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(teacherId) &&
+        isValidTeacherMember(incoming(), teacherId) &&
+        incoming().addedBy == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        isAdmin();
+
+      allow update: if false;
+      allow delete: if isVerifiedSignedIn() && isValidId(teacherId) && isAdmin();
+    }
+
+    // 5. Lessons (Educational Catalog for Verified Signed-in Users)
+    match /lessons/{lessonId} {
+      allow get: if isVerifiedSignedIn() && isValidId(lessonId) && existing().visibility == 'public';
+      allow list: if isVerifiedSignedIn() && resource.data.visibility == 'public';
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(lessonId) &&
+        isValidLesson(incoming()) &&
+        incoming().authorId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isTeacher();
+
+      allow update: if isVerifiedSignedIn() &&
+        isValidId(lessonId) &&
+        isValidLesson(incoming()) &&
+        incoming().authorId == existing().authorId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'title', 'level', 'stream', 'subject', 'method', 'link', 'fileName', 'allowDownload', 'time', 'updatedAt'
+          ])) ||
+          (isTeacher() && existing().authorId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly([
+            'allowDownload', 'link', 'title', 'time', 'updatedAt'
+          ]))
+        );
+
+      allow delete: if isVerifiedSignedIn() &&
+        isValidId(lessonId) &&
+        (isAdmin() || (isTeacher() && existing().authorId == request.auth.uid));
+    }
+
+    // 6. Payment Receipts (Strict Owner & Admin Isolation + Terminal State Protection)
+    match /receipts/{receiptId} {
+      allow get: if isVerifiedSignedIn() && isValidId(receiptId) && (existing().ownerId == request.auth.uid || isAdmin());
+      allow list: if isBootstrapAdmin() || (isVerifiedSignedIn() && resource.data.ownerId == request.auth.uid);
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(receiptId) &&
+        isValidReceipt(incoming()) &&
+        incoming().ownerId == request.auth.uid &&
+        incoming().status == 'pending' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isVerifiedSignedIn() &&
+        isValidId(receiptId) &&
+        isValidReceipt(incoming()) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().amount == existing().amount &&
+        incoming().ref == existing().ref &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+
+      allow delete: if isVerifiedSignedIn() && isValidId(receiptId) && isAdmin();
+    }
+
+    // 7. Certificates
+    match /certificates/{certId} {
+      allow get: if isVerifiedSignedIn() && isValidId(certId) && existing().visibility == 'public';
+      allow list: if isVerifiedSignedIn() && resource.data.visibility == 'public';
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(certId) &&
+        isValidCertificate(incoming()) &&
+        incoming().issuerId == request.auth.uid &&
+        incoming().createdAt == request.time && (
+          (incoming().recipientRole == 'تلميذ' && isTeacher()) ||
+          (incoming().recipientRole == 'أستاذ' && isAdmin())
+        );
+
+      allow update: if false;
+      allow delete: if isVerifiedSignedIn() && isValidId(certId) && isAdmin();
+    }
+
+    // 8. Attendance Roster
+    match /roster/{rosterId} {
+      allow get: if isVerifiedSignedIn() && isValidId(rosterId) && (existing().teacherId == request.auth.uid || isAdmin());
+      allow list: if isBootstrapAdmin() || (isVerifiedSignedIn() && resource.data.teacherId == request.auth.uid);
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(rosterId) &&
+        isValidRosterStudent(incoming()) &&
+        incoming().teacherId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isTeacher();
+
+      allow update: if isVerifiedSignedIn() &&
+        isValidId(rosterId) &&
+        isValidRosterStudent(incoming()) &&
+        incoming().teacherId == existing().teacherId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (isAdmin() || (isTeacher() && existing().teacherId == request.auth.uid)) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'time', 'updatedAt']);
+
+      allow delete: if isVerifiedSignedIn() &&
+        isValidId(rosterId) &&
+        (isAdmin() || (isTeacher() && existing().teacherId == request.auth.uid));
+    }
+
+    // 9. Teacher Payout Requests
+    match /payouts/{payoutId} {
+      allow get: if isVerifiedSignedIn() && isValidId(payoutId) && (existing().teacherId == request.auth.uid || isAdmin());
+      allow list: if isBootstrapAdmin() || (isVerifiedSignedIn() && resource.data.teacherId == request.auth.uid);
+
+      allow create: if isVerifiedSignedIn() &&
+        isValidId(payoutId) &&
+        isValidPayout(incoming()) &&
+        incoming().teacherId == request.auth.uid &&
+        incoming().status == 'قيد التحويل' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isTeacher();
+
+      allow update: if isVerifiedSignedIn() &&
+        isValidId(payoutId) &&
+        isValidPayout(incoming()) &&
+        incoming().teacherId == existing().teacherId &&
+        incoming().amount == existing().amount &&
+        incoming().ccp == existing().ccp &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+
+      allow delete: if false;
+    }
+  }
+}

@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  --color-turquoise-50: #e0f7fa;
+  --color-turquoise-100: #b2ebf2;
+  --color-turquoise-200: #80deea;
+  --color-turquoise-300: #4dd0e1;
+  --color-turquoise-400: #26c6da;
+  --color-turquoise-500: #00bcd4;
+  --color-turquoise-600: #00acc1;
+  --color-turquoise-700: #0097a7;
+  --color-turquoise-800: #00838f;
+  --color-turquoise-900: #006064;
+
+  --color-gold-light: #fdf6e2;
+  --color-gold: #d4af37;
+  --color-gold-dark: #aa8c2c;
+  --color-gold-royal: #ffd700;
+
+  --color-darknavy: #07111e;
+  --color-cardbg: #0d1d31;
+
+  --font-cairo: "Cairo", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-cairo);
+    background: radial-gradient(circle at 18% 0%, rgba(0, 131, 143, 0.24) 0%, transparent 45%),
+      radial-gradient(circle at 82% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 45%),
+      linear-gradient(155deg, #060f1a 0%, #091c2b 52%, #07111e 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #f8fafc;
+  }
+
+  button,
+  a,
+  select,
+  input {
+    font-family: inherit;
+  }
+}
+
+.royal-gold-gradient {
+  background: linear-gradient(135deg, #ffd700 0%, #d4af37 58%, #b08f26 100%);
+}
+
+.turquoise-gradient {
+  background: linear-gradient(135deg, #00bcd4 0%, #006c75 100%);
+}
+
+.surface-panel {
+  background: rgba(13, 29, 49, 0.92);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.surface-sub {
+  background: rgba(8, 20, 35, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07111e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.55);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+@media print {
+  body.printing-teacher-card * {
+    visibility: hidden !important;
+  }
+
+  body.printing-teacher-card .teacher-card-print-area,
+  body.printing-teacher-card .teacher-card-print-area * {
+    visibility: visible !important;
+  }
+
+  body.printing-teacher-card .teacher-card-print-area {
+    position: fixed !important;
+    inset: 24px auto auto 50% !important;
+    transform: translateX(-50%) !important;
+    width: 680px !important;
+    max-width: 92vw !important;
+    background: #07111e !important;
+    color: #f8fafc !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+  }
+}
+

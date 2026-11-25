@@ -1,0 +1,664 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user account profile storing role and identity details.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "role": {
+          "type": "string",
+          "enum": ["student", "parent", "teacher", "admin"]
+        },
+        "firstName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "lastName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "birthDate": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 20
+        },
+        "ccp": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 60
+        },
+        "baridi": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 60
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 30
+        },
+        "level": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 60
+        },
+        "stream": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 80
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 80,
+          "description": "Primary teaching subject selected by the teacher in their Teacher Info card."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "displayName", "email", "role", "createdAt", "updatedAt"]
+    },
+    "PlatformSettings": {
+      "title": "PlatformSettings",
+      "description": "Public platform configuration including admin CCP/BaridiMob payment details, section pricing, and occupancy counters.",
+      "type": "object",
+      "properties": {
+        "ccp": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 60
+        },
+        "baridi": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 60
+        },
+        "pricePrivate": {
+          "type": "integer"
+        },
+        "priceSmall": {
+          "type": "integer"
+        },
+        "priceGroup": {
+          "type": "integer"
+        },
+        "annualPricePrivate": {
+          "type": "integer",
+          "description": "Annual subscription price in DZD for the individual private section."
+        },
+        "annualPriceSmall": {
+          "type": "integer",
+          "description": "Annual subscription price in DZD for the small group (8-10 students) section."
+        },
+        "annualPriceGroup": {
+          "type": "integer",
+          "description": "Annual subscription price in DZD for the unlimited open group section."
+        },
+        "privateReg": {
+          "type": "integer"
+        },
+        "privatePres": {
+          "type": "integer"
+        },
+        "smallReg": {
+          "type": "integer"
+        },
+        "smallPres": {
+          "type": "integer"
+        },
+        "groupReg": {
+          "type": "integer"
+        },
+        "groupPres": {
+          "type": "integer"
+        },
+        "updatedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ccp",
+        "baridi",
+        "pricePrivate",
+        "priceSmall",
+        "priceGroup",
+        "privateReg",
+        "privatePres",
+        "smallReg",
+        "smallPres",
+        "groupReg",
+        "groupPres",
+        "updatedBy",
+        "updatedAt"
+      ]
+    },
+    "FinanceSummary": {
+      "title": "FinanceSummary",
+      "description": "Restricted financial ledger summary (teacher CCP, confirmed revenue totals, and revenue split percentages) visible only to teachers and administrators.",
+      "type": "object",
+      "properties": {
+        "teacherCcp": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 60
+        },
+        "approvedGrossTotal": {
+          "type": "integer"
+        },
+        "approvedReceiptsCount": {
+          "type": "integer"
+        },
+        "platformSharePct": {
+          "type": "integer",
+          "description": "Platform revenue share percentage (0-100), complementary to teacherSharePct."
+        },
+        "teacherSharePct": {
+          "type": "integer",
+          "description": "Teacher revenue share percentage (0-100), complementary to platformSharePct."
+        },
+        "updatedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "teacherCcp",
+        "approvedGrossTotal",
+        "approvedReceiptsCount",
+        "updatedBy",
+        "updatedAt"
+      ]
+    },
+    "AdminMember": {
+      "title": "AdminMember",
+      "description": "Trusted administrator record granting platform management privileges (strictly capped at 3 admins total: primary director + slots admin_2 and admin_3).",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 120,
+          "description": "Normalized lowercase Google email address of the administrator."
+        },
+        "isPrimary": {
+          "type": "boolean"
+        },
+        "addedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "name", "email", "isPrimary", "addedBy", "createdAt"]
+    },
+    "TeacherMember": {
+      "title": "TeacherMember",
+      "description": "Trusted teacher record managed by administrators.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "addedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "name", "subject", "addedBy", "createdAt"]
+    },
+    "Lesson": {
+      "title": "Lesson",
+      "description": "Live or recorded class session published by teachers or administrators.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "level": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "stream": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "method": {
+          "type": "string",
+          "enum": ["Zoom", "Telegram", "Google Meet", "YouTube", "WhatsApp", "دروس مسجلة"]
+        },
+        "link": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 300
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "allowDownload": {
+          "type": "boolean"
+        },
+        "time": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "teacherName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "title",
+        "level",
+        "stream",
+        "subject",
+        "method",
+        "link",
+        "fileName",
+        "allowDownload",
+        "time",
+        "teacherName",
+        "authorId",
+        "visibility",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PaymentReceipt": {
+      "title": "PaymentReceipt",
+      "description": "Student or parent BaridiMob/CCP transfer receipt pending administrative verification.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "studentName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "submittedBy": {
+          "type": "string",
+          "enum": ["تلميذ", "ولي أمر"]
+        },
+        "level": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "stream": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "sectionType": {
+          "type": "string",
+          "enum": [
+            "قسم خاص فردي",
+            "قسم مجموعة مصغرة (8-10 تلاميذ)",
+            "قسم جماعي (عدد غير محدود)"
+          ]
+        },
+        "amount": {
+          "type": "integer"
+        },
+        "method": {
+          "type": "string",
+          "enum": ["BaridiMob", "CCP"]
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "previewUrl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200000
+        },
+        "isPdf": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"]
+        },
+        "date": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 20
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "studentName",
+        "submittedBy",
+        "level",
+        "stream",
+        "subject",
+        "sectionType",
+        "amount",
+        "method",
+        "ref",
+        "fileName",
+        "previewUrl",
+        "isPdf",
+        "status",
+        "date",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Excellence or honor certificate issued to a student or teacher.",
+      "type": "object",
+      "properties": {
+        "recipient": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "recipientRole": {
+          "type": "string",
+          "enum": ["تلميذ", "أستاذ"]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 240
+        },
+        "issuer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "issuerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "date": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 20
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "recipient",
+        "recipientRole",
+        "reason",
+        "issuer",
+        "issuerId",
+        "date",
+        "visibility",
+        "createdAt"
+      ]
+    },
+    "RosterStudent": {
+      "title": "RosterStudent",
+      "description": "Live attendance roster entry managed by teachers and administrators.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "status": {
+          "type": "string",
+          "enum": ["حاضر", "غائب"]
+        },
+        "time": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "teacherId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["name", "status", "time", "teacherId", "createdAt", "updatedAt"]
+    },
+    "PayoutRequest": {
+      "title": "PayoutRequest",
+      "description": "Teacher payout withdrawal request for confirmed 30% earnings.",
+      "type": "object",
+      "properties": {
+        "teacherId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "teacherName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "integer"
+        },
+        "ccp": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 60
+        },
+        "status": {
+          "type": "string",
+          "enum": ["قيد التحويل", "تم التحويل"]
+        },
+        "date": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 20
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "teacherId",
+        "teacherName",
+        "amount",
+        "ccp",
+        "status",
+        "date",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user profiles isolated by owner UID or administrator."
+    },
+    "/settings/platform": {
+      "schema": { "$ref": "#/entities/PlatformSettings" },
+      "description": "Public platform pricing, admin payment instructions, and section counters."
+    },
+    "/settings/finance": {
+      "schema": { "$ref": "#/entities/FinanceSummary" },
+      "description": "Restricted teacher CCP and confirmed revenue totals readable only by teachers and admins."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminMember" },
+      "description": "Trusted platform administrators list (up to 3 admins)."
+    },
+    "/teachers/{teacherId}": {
+      "schema": { "$ref": "#/entities/TeacherMember" },
+      "description": "Trusted teachers authorized to publish lessons, manage attendance, and issue student certificates."
+    },
+    "/lessons/{lessonId}": {
+      "schema": { "$ref": "#/entities/Lesson" },
+      "description": "Published live and recorded lessons visible to signed-in users."
+    },
+    "/receipts/{receiptId}": {
+      "schema": { "$ref": "#/entities/PaymentReceipt" },
+      "description": "Payment receipts submitted by students or parents for admin review."
+    },
+    "/certificates/{certId}": {
+      "schema": { "$ref": "#/entities/Certificate" },
+      "description": "Excellence and honor certificates issued to students and teachers."
+    },
+    "/roster/{rosterId}": {
+      "schema": { "$ref": "#/entities/RosterStudent" },
+      "description": "Live attendance roster entries managed by teachers and administrators."
+    },
+    "/payouts/{payoutId}": {
+      "schema": { "$ref": "#/entities/PayoutRequest" },
+      "description": "Teacher payout withdrawal requests reviewed by administrators."
+    }
+  }
+}

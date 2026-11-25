@@ -1,0 +1,6 @@
+{
+  "name": "منصة النبراس التعليمية مع الأستاذة ليلى",
+  "description": "الريادة الرقمية للتعليم عن بعد من التحضيري إلى البكالوريا — بوابات متكاملة للتلاميذ والأولياء والأساتذة وإدارة المنصة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

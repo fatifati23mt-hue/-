@@ -1,0 +1,1362 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة النبراس التعليمية مع الأستاذة ليلى</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        turquoise: {
+                            50: '#e0f7fa',
+                            100: '#b2ebf2',
+                            400: '#26c6da',
+                            500: '#00bcd4',
+                            600: '#00acc1',
+                            700: '#0097a7',
+                            800: '#00838f',
+                            900: '#006064',
+                        },
+                        gold: {
+                            light: '#fdf6e2',
+                            DEFAULT: '#d4af37',
+                            dark: '#aa8c2c',
+                            royal: '#ffd700',
+                        },
+                        darknavy: '#07111e',
+                        cardbg: '#0d1d31'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #07111e 0%, #004d52 55%, #07111e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .royal-gold-border {
+            border: 1.5px solid #d4af37;
+            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.18);
+        }
+        .royal-gold-gradient {
+            background: linear-gradient(135deg, #ffd700 0%, #d4af37 60%, #aa8c2c 100%);
+        }
+        .turquoise-gradient {
+            background: linear-gradient(135deg, #00bcd4 0%, #006064 100%);
+        }
+        .glass-card {
+            background: rgba(13, 29, 49, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+        .main-icon-card {
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .main-icon-card:hover {
+            transform: translateY(-4px);
+        }
+        .main-icon-active {
+            background: linear-gradient(145deg, rgba(0, 131, 143, 0.45), rgba(212, 175, 55, 0.22));
+            border: 2px solid #ffd700 !important;
+            box-shadow: 0 0 22px rgba(255, 215, 0, 0.25);
+        }
+        ::-webkit-scrollbar { width: 7px; }
+        ::-webkit-scrollbar-track { background: #07111e; }
+        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 4px; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Top Header & Security Status -->
+    <header class="sticky top-0 z-40 glass-card border-b border-gold/40 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <!-- Platform Brand -->
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-12 h-12 rounded-2xl royal-gold-gradient flex items-center justify-center text-darknavy text-2xl font-black shadow-lg">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-xl font-black text-gold-royal tracking-wide">
+                        منصة النبراس التعليمية مع الأستاذة ليلى
+                    </h1>
+                    <p class="text-[11px] text-turquoise-300 font-semibold">
+                        الريادة الرقمية للتعليم عن بعد • من التحضيري إلى البكالوريا
+                    </p>
+                </div>
+            </div>
+
+            <!-- Live Cyber Protection & Instant Sync Badge -->
+            <div class="flex items-center gap-2.5 flex-wrap">
+                <a href="https://wa.me/213563558678" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 bg-emerald-600/20 hover:bg-emerald-600/35 border border-emerald-500/50 text-emerald-300 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow">
+                    <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+                    <span>واتساب الإدارة: <span dir="ltr">0563558678</span></span>
+                </a>
+                <div class="flex items-center gap-2 bg-slate-900/90 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-emerald-300 font-bold" id="header-shield-text">درع الحماية الشامل مفعّل 100%</span>
+                </div>
+                <button onclick="runCyberScan()" class="px-3 py-1.5 turquoise-gradient hover:opacity-95 text-white rounded-xl text-xs font-bold shadow transition">
+                    <i class="fa-solid fa-shield-halved ml-1"></i> فحص أمني آني
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+
+        <!-- ================= UNIFIED 5-ICON NAVIGATION BAR (ALWAYS VISIBLE TOGETHER) ================= -->
+        <section aria-label="الأيقونات الخمس الرئيسية للمنصة" class="space-y-3">
+            <div class="flex flex-wrap justify-between items-center gap-2 px-1">
+                <h2 class="text-sm sm:text-base font-extrabold text-gold-royal flex items-center">
+                    <i class="fa-solid fa-compass ml-2 text-turquoise-400"></i> اختر بوابتك للوصول الفوري (جميع الأيقونات متاحة أمامك):
+                </h2>
+                <div class="text-[11px] text-slate-300 bg-slate-900/80 px-3 py-1 rounded-full border border-gold/30">
+                    CCP المنصة: <strong id="top-ccp-display" class="text-gold-royal">0012345678 المفتاح 45</strong> | بريدي موب: <strong id="top-baridi-display" class="text-turquoise-400">00799999001234567845</strong>
+                </div>
+            </div>
+
+            <!-- The 5 Main Icons Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                <!-- 1. Students Icon -->
+                <button id="nav-card-student" onclick="switchTab('student')" class="main-icon-card main-icon-active glass-card p-4 rounded-2xl text-center flex flex-col items-center justify-center cursor-pointer group">
+                    <div class="w-12 h-12 rounded-2xl turquoise-gradient text-white flex items-center justify-center text-xl mb-2.5 shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-black text-white">أيقونة التلاميذ</h3>
+                    <span class="text-[11px] text-turquoise-300 mt-0.5">الدروس، البث المباشر والوثائق</span>
+                </button>
+
+                <!-- 2. Parents Icon -->
+                <button id="nav-card-parent" onclick="switchTab('parent')" class="main-icon-card glass-card p-4 rounded-2xl text-center flex flex-col items-center justify-center cursor-pointer group hover:border-gold">
+                    <div class="w-12 h-12 rounded-2xl bg-turquoise-800/80 border border-turquoise-400/50 text-turquoise-300 flex items-center justify-center text-xl mb-2.5 shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-black text-white">أيقونة الأولياء</h3>
+                    <span class="text-[11px] text-slate-300 mt-0.5">متابعة تقدم الأبناء والحضور</span>
+                </button>
+
+                <!-- 3. Teachers Icon -->
+                <button id="nav-card-teacher" onclick="switchTab('teacher')" class="main-icon-card glass-card p-4 rounded-2xl text-center flex flex-col items-center justify-center cursor-pointer group hover:border-gold">
+                    <div class="w-12 h-12 rounded-2xl royal-gold-gradient text-darknavy flex items-center justify-center text-xl mb-2.5 shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-black text-white">أيقونة الأساتذة</h3>
+                    <span class="text-[11px] text-gold-royal mt-0.5">تقديم الدروس، CCP والتكريم</span>
+                </button>
+
+                <!-- 4. Director / Admin Icon -->
+                <button id="nav-card-admin" onclick="switchTab('admin')" class="main-icon-card glass-card p-4 rounded-2xl text-center flex flex-col items-center justify-center cursor-pointer group hover:border-gold">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-gold text-gold-royal flex items-center justify-center text-xl mb-2.5 shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-black text-white">مدير المنصة</h3>
+                    <span class="text-[11px] text-slate-300 mt-0.5">التحكم الشامل، الأسعار والأدمن</span>
+                </button>
+
+                <!-- 5. Section Type Icon (3 Sections Interactive Hub) -->
+                <button id="nav-card-sections" onclick="switchTab('sections')" class="col-span-2 sm:col-span-1 main-icon-card glass-card p-4 rounded-2xl text-center flex flex-col items-center justify-center cursor-pointer group hover:border-gold">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-turquoise-500 to-gold text-darknavy flex items-center justify-center text-xl mb-2.5 shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-black text-gold-royal">أيقونة نوع القسم</h3>
+                    <span id="nav-active-sec-badge" class="text-[11px] text-turquoise-300 mt-0.5 font-bold">فردي • 8-10 تلاميذ • جماعي</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= TAB 1: STUDENT PORTAL ================= -->
+        <section id="panel-student" class="space-y-6">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 royal-gold-border">
+                <div class="flex flex-wrap justify-between items-center border-b border-slate-700/80 pb-4 mb-6 gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-gold-royal flex items-center">
+                            <i class="fa-solid fa-user-graduate ml-2 text-turquoise-400"></i> بوابة التلاميذ الذكية
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-0.5">اختر المستوى الدراسي، الشعبة، المادة ونوع القسم لحساب السعر آلياً ومتابعة الدروس والوثائق.</p>
+                    </div>
+                    <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+                        <i class="fa-solid fa-bolt ml-1"></i> وصول آني للدروس والوثائق
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left Control Panel (4 Cols) -->
+                    <div class="lg:col-span-4 glass-card p-5 rounded-2xl space-y-4 border border-gold/30">
+                        <h3 class="font-bold text-turquoise-400 text-sm border-b border-slate-700 pb-2">
+                            <i class="fa-solid fa-sliders ml-1"></i> تحديد المسار الدراسي ونوع القسم
+                        </h3>
+
+                        <!-- Level -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">1. المستوى الدراسي (التحضيري إلى البكالوريا)</label>
+                            <select id="stu-level" onchange="syncStreams('stu'); filterStudentLessons();" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-gold focus:outline-none">
+                                <option value="التحضيري">القسم التحضيري</option>
+                                <option value="السنة الأولى ابتدائي">السنة الأولى ابتدائي</option>
+                                <option value="السنة الثانية ابتدائي">السنة الثانية ابتدائي</option>
+                                <option value="السنة الثالثة ابتدائي">السنة الثالثة ابتدائي</option>
+                                <option value="السنة الرابعة ابتدائي">السنة الرابعة ابتدائي</option>
+                                <option value="السنة الخامسة ابتدائي">السنة الخامسة ابتدائي</option>
+                                <option value="السنة الأولى متوسط">السنة الأولى متوسط</option>
+                                <option value="السنة الثانية متوسط">السنة الثانية متوسط</option>
+                                <option value="السنة الثالثة متوسط">السنة الثالثة متوسط</option>
+                                <option value="السنة الرابعة متوسط">السنة الرابعة متوسط (BEM)</option>
+                                <option value="السنة الأولى ثانوي">السنة الأولى ثانوي</option>
+                                <option value="السنة الثانية ثانوي">السنة الثانية ثانوي</option>
+                                <option value="السنة الثالثة ثانوي" selected>السنة الثالثة ثانوي (BAC)</option>
+                            </select>
+                        </div>
+
+                        <!-- Stream -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">2. الشعبة الدراسية (جميع الشعب)</label>
+                            <select id="stu-stream" onchange="filterStudentLessons()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-gold focus:outline-none"></select>
+                        </div>
+
+                        <!-- Subject (All Subjects Shown Across All Levels) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">3. المادة الدراسية (جميع المواد متاحة)</label>
+                            <select id="stu-subject" onchange="filterStudentLessons()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-gold focus:outline-none">
+                                <option value="الكل">جميع المواد الدراسية</option>
+                                <option value="الرياضيات">الرياضيات</option>
+                                <option value="العلوم الطبيعية والحياة">العلوم الطبيعية والحياة</option>
+                                <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                                <option value="اللغة العربية وآدابها">اللغة العربية وآدابها</option>
+                                <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                <option value="التاريخ والجغرافيا">التاريخ والجغرافيا</option>
+                                <option value="العلوم الإسلامية">العلوم الإسلامية</option>
+                                <option value="الفلسفة">الفلسفة</option>
+                                <option value="التسيير المحاسبي والمالي">التسيير المحاسبي والمالي</option>
+                                <option value="الاقتصاد والمناجمنت">الاقتصاد والمناجمنت</option>
+                                <option value="القانون">القانون</option>
+                                <option value="الهندسة (مدنية/ميكانيكية/كهربائية)">الهندسة (مدنية/ميكانيكية/كهربائية)</option>
+                                <option value="اللغة الأمازيغية">اللغة الأمازيغية</option>
+                                <option value="الإعلام الآلي">الإعلام الآلي</option>
+                                <option value="مواد التحضيري والابتدائي">مواد التحضيري والابتدائي</option>
+                            </select>
+                        </div>
+
+                        <!-- Section Type Selector -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">4. نوع القسم المطلوب</label>
+                            <select id="stu-section" onchange="setGlobalSectionType(this.value)" class="w-full bg-slate-900 border border-gold/60 rounded-xl px-3 py-2.5 text-xs text-gold-royal font-bold focus:border-gold focus:outline-none">
+                                <option value="قسم خاص فردي">قسم خاص فردي (1 تلميذ)</option>
+                                <option value="قسم مجموعة مصغرة (8-10 تلاميذ)">قسم مجموعة مصغرة (8 إلى 10 تلاميذ)</option>
+                                <option value="قسم جماعي (عدد غير محدود)">قسم جماعي (عدد غير محدود)</option>
+                            </select>
+                        </div>
+
+                        <!-- Price Display Box -->
+                        <div class="bg-darknavy p-4 rounded-2xl border border-gold/60 text-center space-y-1.5">
+                            <span id="stu-cap-note" class="text-[11px] text-turquoise-300 font-bold block">السعة: تلميذ واحد فقط (1/1)</span>
+                            <div id="stu-price-display" class="text-2xl font-black text-gold-royal my-1">6,000 دج</div>
+                            <div class="text-[11px] text-slate-200 bg-slate-900/90 p-2 rounded-xl border border-slate-800 space-y-0.5">
+                                <p>CCP الإدارة: <strong id="stu-ccp-display" class="text-gold-royal">0012345678 المفتاح 45</strong></p>
+                                <p>بريدي موب: <strong id="stu-baridi-display" class="text-turquoise-400">00799999001234567845</strong></p>
+                            </div>
+                        </div>
+
+                        <button onclick="enrollInSelectedSection()" class="w-full py-3 royal-gold-gradient text-darknavy font-black rounded-xl text-xs shadow-lg hover:opacity-95 transition">
+                            <i class="fa-solid fa-circle-check ml-1"></i> تأكيد التسجيل في هذا القسم
+                        </button>
+
+                        <a href="https://wa.me/213563558678?text=السلام%20عليكم%20إدارة%20منصة%20النبراس%20التعليمية،%20أرغب%20في%20إرسال%20وصل%20الدفع%20أو%20الاستفسار" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-600/35 text-emerald-300 border border-emerald-500/50 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                            <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i>
+                            <span>تواصل مباشر عبر واتساب الإدارة: <span dir="ltr">0563558678</span></span>
+                        </a>
+                    </div>
+
+                        <button onclick="enrollInSelectedSection()" class="w-full py-3 royal-gold-gradient text-darknavy font-black rounded-xl text-xs shadow-lg hover:opacity-95 transition">
+                            <i class="fa-solid fa-circle-check ml-1"></i> تأكيد التسجيل في هذا القسم
+                        </button>
+                    </div>
+
+                    <!-- Right Lessons & Certificates (8 Cols) -->
+                    <div class="lg:col-span-8 space-y-5">
+                        <!-- Payment Receipt Upload Card (Student Portal) -->
+                        <div class="glass-card p-5 rounded-2xl border border-gold/50 bg-gradient-to-br from-slate-900/90 to-turquoise-900/20 space-y-4">
+                            <div class="flex flex-wrap justify-between items-center border-b border-slate-700/80 pb-3 gap-2">
+                                <div>
+                                    <h3 class="font-black text-gold-royal text-sm sm:text-base flex items-center">
+                                        <i class="fa-solid fa-receipt ml-2 text-turquoise-400"></i> تأكيد الدفع وتفعيل الاشتراك (BaridiMob / CCP)
+                                    </h3>
+                                    <p class="text-[11px] text-slate-300 mt-0.5">ارفع صورة وصل التحويل البريدي لتفعيل اشتراكك فوراً من طرف الإدارة.</p>
+                                </div>
+                                <span id="stu-sub-status-badge" class="px-3 py-1.5 rounded-xl text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                    حالة الاشتراك: بانتظار الوصل
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-300 mb-1">اسم التلميذ الكامل</label>
+                                    <input type="text" id="stu-pay-name" value="محمد أمين بن علي" placeholder="أدخل اسم التلميذ" class="w-full bg-darknavy border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-gold focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-300 mb-1">طريقة الدفع</label>
+                                    <select id="stu-pay-method" class="w-full bg-darknavy border border-slate-700 rounded-xl px-3 py-2 text-xs text-turquoise-300 font-bold focus:border-gold focus:outline-none">
+                                        <option value="BaridiMob">بريدي موب (BaridiMob)</option>
+                                        <option value="CCP">حساب بريدي (CCP)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-300 mb-1">رقم العملية / الوصل</label>
+                                    <input type="text" id="stu-pay-ref" placeholder="مثال: OP-984512" class="w-full bg-darknavy border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-gold focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-300 mb-1">صورة وصل الدفع (JPG/PNG/PDF)</label>
+                                    <input type="file" id="stu-pay-file" accept="image/*,.pdf" onchange="previewReceiptFile('stu')" class="w-full text-[11px] text-slate-300 file:ml-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-gold file:text-darknavy cursor-pointer">
+                                </div>
+                            </div>
+
+                            <!-- Live Image Preview Container -->
+                            <div id="stu-pay-preview-wrap" class="hidden bg-darknavy/90 p-3 rounded-xl border border-turquoise-500/40 flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <img id="stu-pay-preview-img" src="" alt="معاينة الوصل" class="w-14 h-14 object-cover rounded-lg border border-gold/50">
+                                    <div class="text-xs">
+                                        <span class="font-bold text-gold-royal block">معاينة وصل الدفع الجاهز للإرسال</span>
+                                        <span id="stu-pay-file-label" class="text-[11px] text-slate-400"></span>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="clearReceiptPreview('stu')" class="text-red-400 hover:text-red-300 text-xs px-2 py-1">
+                                    <i class="fa-solid fa-xmark"></i> إزالة
+                                </button>
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                                <button type="button" onclick="submitPaymentReceipt('stu')" class="flex-grow sm:flex-grow-0 px-5 py-2.5 royal-gold-gradient text-darknavy font-black rounded-xl text-xs shadow-lg hover:opacity-95 transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>إرسال وصل الدفع للمراجعة</span>
+                                </button>
+                                <a href="https://wa.me/213563558678?text=السلام%20عليكم%20إدارة%20منصة%20النبراس،%20أرسل%20لكم%20صورة%20وصل%20الدفع%20لتفعيل%20اشتراك%20التلميذ" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/35 text-emerald-300 border border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+                                    <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+                                    <span>إرسال نسخة عبر واتساب <span dir="ltr">0563558678</span></span>
+                                </a>
+                            </div>
+
+                            <!-- Student Submitted Receipts History -->
+                            <div id="stu-receipts-history" class="space-y-2 pt-2 border-t border-slate-800/80"></div>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-2xl border border-turquoise-500/30">
+                            <div class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-3 mb-4 gap-2">
+                                <h3 class="font-bold text-gold-royal text-sm">
+                                    <i class="fa-solid fa-satellite-dish ml-1 text-turquoise-400"></i> الدروس المباشرة والمسجلة المتاحة الآن
+                                </h3>
+                                <span id="stu-active-filter-tag" class="text-[11px] bg-turquoise-900/80 text-turquoise-200 px-3 py-1 rounded-full border border-turquoise-500/30">
+                                    السنة الثالثة ثانوي • جميع المواد
+                                </span>
+                            </div>
+                            <div id="stu-lessons-list" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-2xl border border-gold/30">
+                            <h3 class="font-bold text-gold-royal text-sm border-b border-slate-700 pb-2 mb-3">
+                                <i class="fa-solid fa-award ml-1"></i> لوحة شهادات التفوق والتكريم الممنوحة للتلاميذ
+                            </h3>
+                            <div id="stu-certs-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: PARENT PORTAL ================= -->
+        <section id="panel-parent" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 border border-turquoise-400/50">
+                <div class="flex flex-wrap justify-between items-center border-b border-slate-700/80 pb-4 mb-6 gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-turquoise-400 flex items-center">
+                            <i class="fa-solid fa-user-shield ml-2 text-gold-royal"></i> بوابة الأولياء لمتابعة تقدم الأبناء
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-0.5">حدد المستوى، الشعبة، المادة ونوع القسم لمتابعة نسبة إنجاز الدروس، الحضور والغياب، وتحميل الوثائق.</p>
+                    </div>
+                    <span class="px-3 py-1.5 rounded-xl bg-gold/15 border border-gold/40 text-gold-royal text-xs font-bold">
+                        <i class="fa-solid fa-eye ml-1"></i> متابعة بيداغوجية لحظية
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Parent Controls (4 Cols) -->
+                    <div class="lg:col-span-4 glass-card p-5 rounded-2xl space-y-4 border border-turquoise-500/30">
+                        <h3 class="font-bold text-gold-royal text-sm border-b border-slate-700 pb-2">
+                            <i class="fa-solid fa-child-reaching ml-1"></i> بيانات الابن والمسار الدراسي
+                        </h3>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">اسم التلميذ (الابن/الابنة)</label>
+                            <input type="text" id="par-child-input" value="محمد أمين بن علي" oninput="updateParentView()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-turquoise-400 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">المستوى الدراسي</label>
+                            <select id="par-level" onchange="syncStreams('par'); updateParentView();" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-turquoise-400 focus:outline-none">
+                                <option value="التحضيري">القسم التحضيري</option>
+                                <option value="السنة الأولى ابتدائي">السنة الأولى ابتدائي</option>
+                                <option value="السنة الثانية ابتدائي">السنة الثانية ابتدائي</option>
+                                <option value="السنة الثالثة ابتدائي">السنة الثالثة ابتدائي</option>
+                                <option value="السنة الرابعة ابتدائي">السنة الرابعة ابتدائي</option>
+                                <option value="السنة الخامسة ابتدائي">السنة الخامسة ابتدائي</option>
+                                <option value="السنة الأولى متوسط">السنة الأولى متوسط</option>
+                                <option value="السنة الثانية متوسط">السنة الثانية متوسط</option>
+                                <option value="السنة الثالثة متوسط">السنة الثالثة متوسط</option>
+                                <option value="السنة الرابعة متوسط">السنة الرابعة متوسط (BEM)</option>
+                                <option value="السنة الأولى ثانوي">السنة الأولى ثانوي</option>
+                                <option value="السنة الثانية ثانوي">السنة الثانية ثانوي</option>
+                                <option value="السنة الثالثة ثانوي" selected>السنة الثالثة ثانوي (BAC)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">الشعبة الدراسية</label>
+                            <select id="par-stream" onchange="updateParentView()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-turquoise-400 focus:outline-none"></select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">المادة المراد متابعتها (جميع المواد)</label>
+                            <select id="par-subject" onchange="updateParentView()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-turquoise-400 focus:outline-none">
+                                <option value="الرياضيات">الرياضيات</option>
+                                <option value="العلوم الطبيعية والحياة">العلوم الطبيعية والحياة</option>
+                                <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                                <option value="اللغة العربية وآدابها">اللغة العربية وآدابها</option>
+                                <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                <option value="التاريخ والجغرافيا">التاريخ والجغرافيا</option>
+                                <option value="العلوم الإسلامية">العلوم الإسلامية</option>
+                                <option value="الفلسفة">الفلسفة</option>
+                                <option value="التسيير المحاسبي والمالي">التسيير المحاسبي والمالي</option>
+                                <option value="الاقتصاد والمناجمنت">الاقتصاد والمناجمنت</option>
+                                <option value="القانون">القانون</option>
+                                <option value="الهندسة (مدنية/ميكانيكية/كهربائية)">الهندسة (مدنية/ميكانيكية/كهربائية)</option>
+                                <option value="اللغة الأمازيغية">اللغة الأمازيغية</option>
+                                <option value="الإعلام الآلي">الإعلام الآلي</option>
+                                <option value="مواد التحضيري والابتدائي">مواد التحضيري والابتدائي</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-200 mb-1">نوع القسم المسجل به الابن</label>
+                            <select id="par-section" onchange="setGlobalSectionType(this.value)" class="w-full bg-slate-900 border border-turquoise-400/60 rounded-xl px-3 py-2.5 text-xs text-turquoise-300 font-bold focus:outline-none">
+                                <option value="قسم خاص فردي">قسم خاص فردي (1 تلميذ)</option>
+                                <option value="قسم مجموعة مصغرة (8-10 تلاميذ)">قسم مجموعة مصغرة (8 إلى 10 تلاميذ)</option>
+                                <option value="قسم جماعي (عدد غير محدود)">قسم جماعي (عدد غير محدود)</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-darknavy p-3.5 rounded-xl border border-gold/40 flex justify-between items-center">
+                            <span class="text-xs text-slate-300">سعر القسم الشهري:</span>
+                            <span id="par-price-display" class="text-lg font-black text-gold-royal">6,000 دج</span>
+                        </div>
+                    </div>
+
+                    <!-- Child Progress Dashboard (8 Cols) -->
+                    <div class="lg:col-span-8 space-y-5">
+                        <!-- Payment Receipt Upload Card (Parent Portal) -->
+                        <div class="glass-card p-5 rounded-2xl border border-gold/50 bg-gradient-to-br from-slate-900/90 to-turquoise-900/20 space-y-4">
+                            <div class="flex flex-wrap justify-between items-center border-b border-slate-700/80 pb-3 gap-2">
+                                <div>
+                                    <h3 class="font-black text-gold-royal text-sm sm:text-base flex items-center">
+                                        <i class="fa-solid fa-receipt ml-2 text-turquoise-400"></i> تأكيد دفع اشتراك الابن وتفعيله (BaridiMob / CCP)
+                                    </h3>
+                                    <p class="text-[11px] text-slate-300 mt-0.5">CCP الإدارة: <strong class="text-gold-royal parent-inline-ccp">0012345678 المفتاح 45</strong> • بريدي موب: <strong class="text-turquoise-300 parent-inline-baridi">00799999001234567845</strong></p>
+                                </div>
+                                <span id="par-sub-status-badge" class="px-3 py-1.5 rounded-xl text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                    حالة الاشتراك: بانتظار الوصل
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-300 mb-1">طريقة الدفع</label>
+                                    <select id="par-pay-method" class="w-full bg-darknavy border border-slate-700 rounded-xl px-3 py-2 text-xs text-turquoise-300 font-bold focus:border-gold focus:outline-none">
+                                        <option value="BaridiMob">بريدي موب (BaridiMob)</option>
+                                        <option value="CCP">حساب بريدي (CCP)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-300 mb-1">رقم العملية / الوصل</label>
+                                    <input type="text" id="par-pay-ref" placeholder="مثال: BM-774102" class="w-full bg-darknavy border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-gold focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-300 mb-1">صورة وصل الدفع (JPG/PNG/PDF)</label>
+                                    <input type="file" id="par-pay-file" accept="image/*,.pdf" onchange="previewReceiptFile('par')" class="w-full text-[11px] text-slate-300 file:ml-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-gold file:text-darknavy cursor-pointer">
+                                </div>
+                            </div>
+
+                            <div id="par-pay-preview-wrap" class="hidden bg-darknavy/90 p-3 rounded-xl border border-turquoise-500/40 flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <img id="par-pay-preview-img" src="" alt="معاينة الوصل" class="w-14 h-14 object-cover rounded-lg border border-gold/50">
+                                    <div class="text-xs">
+                                        <span class="font-bold text-gold-royal block">معاينة وصل دفع اشتراك الابن</span>
+                                        <span id="par-pay-file-label" class="text-[11px] text-slate-400"></span>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="clearReceiptPreview('par')" class="text-red-400 hover:text-red-300 text-xs px-2 py-1">
+                                    <i class="fa-solid fa-xmark"></i> إزالة
+                                </button>
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <button type="button" onclick="submitPaymentReceipt('par')" class="px-5 py-2.5 royal-gold-gradient text-darknavy font-black rounded-xl text-xs shadow-lg hover:opacity-95 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>إرسال وصل الدفع للمراجعة</span>
+                                </button>
+                                <a href="https://wa.me/213563558678?text=السلام%20عليكم%20إدارة%20منصة%20النبراس،%20بصفتي%20ولي%20أمر%20أرسل%20لكم%20وصل%20الدفع%20لتفعيل%20اشتراك%20ابني" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/35 text-emerald-300 border border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+                                    <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+                                    <span>إرسال نسخة عبر واتساب <span dir="ltr">0563558678</span></span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="glass-card p-3.5 rounded-2xl border border-gold/40 text-center">
+                                <span class="text-[11px] text-slate-400 block">تقدم الدروس</span>
+                                <span id="par-pct-val" class="text-xl font-black text-gold-royal mt-1 block">92%</span>
+                            </div>
+                            <div class="glass-card p-3.5 rounded-2xl border border-emerald-500/40 text-center">
+                                <span class="text-[11px] text-slate-400 block">الحصص الحاضرة</span>
+                                <span id="par-att-val" class="text-xl font-black text-emerald-400 mt-1 block">15 حصة</span>
+                            </div>
+                            <div class="glass-card p-3.5 rounded-2xl border border-red-500/40 text-center">
+                                <span class="text-[11px] text-slate-400 block">الغيابات</span>
+                                <span id="par-abs-val" class="text-xl font-black text-red-400 mt-1 block">0 حصة</span>
+                            </div>
+                            <div class="glass-card p-3.5 rounded-2xl border border-turquoise-500/40 text-center">
+                                <span class="text-[11px] text-slate-400 block">معدل التقييم</span>
+                                <span id="par-score-val" class="text-xl font-black text-turquoise-400 mt-1 block">18.2 / 20</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-2xl border border-slate-700 space-y-4">
+                            <div class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-2 gap-2">
+                                <h3 class="font-bold text-gold-royal text-sm">
+                                    <i class="fa-solid fa-chart-line ml-1"></i> تقرير إنجاز البرنامج الدراسي لـ: <span id="par-child-title" class="text-white">محمد أمين بن علي</span>
+                                </h3>
+                                <span id="par-path-badge" class="text-[11px] text-turquoise-300 font-semibold"></span>
+                            </div>
+                            <div id="par-bars-container" class="space-y-3"></div>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-2xl border border-turquoise-500/30 space-y-3">
+                            <h3 class="font-bold text-turquoise-400 text-sm border-b border-slate-700 pb-2">
+                                <i class="fa-solid fa-file-shield ml-1"></i> سجل الحضور والوثائق المسموح بتحميلها للولي
+                            </h3>
+                            <div id="par-docs-log" class="space-y-2.5 text-xs"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: TEACHER PORTAL ================= -->
+        <section id="panel-teacher" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 border border-gold/50">
+                <div class="flex flex-wrap justify-between items-center border-b border-slate-700/80 pb-4 mb-6 gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-gold-royal flex items-center">
+                            <i class="fa-solid fa-chalkboard-user ml-2 text-turquoise-400"></i> بوابة الأساتذة الاحترافية
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-0.5">اختيار طريقة التدريس، متابعة التلاميذ المسجلين والحاضرين والغائبين، أرباح CCP الآلية (30% للمنصة)، وتكريم المتفوقين.</p>
+                    </div>
+                    <span class="px-3 py-1.5 rounded-xl bg-turquoise-500/20 border border-turquoise-500/40 text-turquoise-300 text-xs font-bold">
+                        <i class="fa-solid fa-coins ml-1 text-gold-royal"></i> تحويل آلي للأرباح إلى CCP الأستاذ
+                    </span>
+                </div>
+
+                <!-- Top Row: Registered/Present/Absent Stats + Teacher CCP Calculator -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+                    <!-- Student Attendance Stats (7 Cols) -->
+                    <div class="lg:col-span-7 glass-card p-5 rounded-2xl border border-turquoise-500/40 space-y-4">
+                        <div class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-2 gap-2">
+                            <h3 class="font-bold text-turquoise-400 text-sm">
+                                <i class="fa-solid fa-users-viewfinder ml-1"></i> إحصائيات التلاميذ المسجلين والحاضرين والغائبين
+                            </h3>
+                            <div class="flex gap-1.5">
+                                <button onclick="markStudentPresent()" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 rounded-lg text-[11px] font-bold transition">
+                                    <i class="fa-solid fa-user-check ml-1"></i> حضور تلميذ
+                                </button>
+                                <button onclick="enrollInSelectedSection()" class="px-2.5 py-1 bg-gold/20 hover:bg-gold/30 text-gold-royal border border-gold/40 rounded-lg text-[11px] font-bold transition">
+                                    <i class="fa-solid fa-user-plus ml-1"></i> مسجل جديد
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3 text-center">
+                            <div class="bg-slate-900/95 p-3.5 rounded-2xl border border-gold/40">
+                                <span class="text-[11px] text-slate-400 block">التلاميذ المسجلين</span>
+                                <span id="tea-stat-reg" class="text-2xl font-black text-white mt-1 block">1 / 1</span>
+                            </div>
+                            <div class="bg-slate-900/95 p-3.5 rounded-2xl border border-emerald-500/40">
+                                <span class="text-[11px] text-slate-400 block">التلاميذ الحاضرين</span>
+                                <span id="tea-stat-pres" class="text-2xl font-black text-emerald-400 mt-1 block">1</span>
+                            </div>
+                            <div class="bg-slate-900/95 p-3.5 rounded-2xl border border-red-500/40">
+                                <span class="text-[11px] text-slate-400 block">التلاميذ الغائبين</span>
+                                <span id="tea-stat-abs" class="text-2xl font-black text-red-400 mt-1 block">0</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-darknavy/90 p-3 rounded-xl border border-slate-800 flex flex-wrap justify-between items-center text-[11px] gap-2">
+                            <span class="text-slate-300">القسم النشط: <strong id="tea-active-sec-name" class="text-gold-royal">قسم خاص فردي</strong></span>
+                            <button onclick="toggleRosterModal()" class="text-turquoise-400 hover:underline font-bold">
+                                <i class="fa-solid fa-list-check ml-1"></i> فتح قائمة الحضور والغياب
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Teacher CCP & 30% Profit Box (5 Cols) -->
+                    <div class="lg:col-span-5 glass-card p-5 rounded-2xl border border-gold/40 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-3">
+                                <h3 class="font-bold text-gold-royal text-sm">
+                                    <i class="fa-solid fa-wallet ml-1"></i> محفظة الأستاذ (30% مؤكدة من كل اشتراك)
+                                </h3>
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">تحديث لحظي</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="text" id="tea-ccp-field" value="0098765432 المفتاح 12" placeholder="أدخل رقم CCP الأستاذ" class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-gold focus:outline-none">
+                                <button onclick="saveTeacherCcpAccount()" class="px-3.5 py-2 royal-gold-gradient text-darknavy font-black rounded-xl text-xs whitespace-nowrap">
+                                    حفظ CCP
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 text-center bg-darknavy p-3 rounded-xl border border-gold/40">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">الاشتراكات المعتمدة</span>
+                                <span id="tea-gross-rev" class="text-xs font-bold text-white">6,000 دج</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-turquoise-400 block">حصة المنصة (70%)</span>
+                                <span id="tea-platform-fee" class="text-xs font-bold text-turquoise-400">4,200 دج</span>
+                            </div>
+                            <div class="bg-gold/15 rounded-lg py-1 border border-gold/40">
+                                <span class="text-[10px] text-gold-royal font-bold block">الأرباح المؤكدة (30%)</span>
+                                <span id="tea-net-profit" class="text-sm font-black text-gold-royal">1,800 دج</span>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="requestTeacherPayout()" class="w-full py-2.5 bg-emerald-600/25 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/50 font-black rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                            <span>طلب سحب الأرباح المؤكدة إلى CCP الأستاذ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Teaching Method + Publish Lesson + Student Certificates -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Publish Lesson Form (7 Cols) -->
+                    <div class="lg:col-span-7 glass-card p-5 rounded-2xl border border-turquoise-500/30 space-y-4">
+                        <h3 class="font-bold text-turquoise-400 text-sm border-b border-slate-700 pb-2">
+                            <i class="fa-solid fa-tower-broadcast ml-1"></i> اختيار طريقة التدريس ونشر الدروس والوثائق
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">المستوى الدراسي</label>
+                                <select id="tea-level" onchange="syncStreams('tea')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                    <option value="التحضيري">القسم التحضيري</option>
+                                    <option value="السنة الأولى ابتدائي">السنة الأولى ابتدائي</option>
+                                    <option value="السنة الثانية ابتدائي">السنة الثانية ابتدائي</option>
+                                    <option value="السنة الثالثة ابتدائي">السنة الثالثة ابتدائي</option>
+                                    <option value="السنة الرابعة ابتدائي">السنة الرابعة ابتدائي</option>
+                                    <option value="السنة الخامسة ابتدائي">السنة الخامسة ابتدائي</option>
+                                    <option value="السنة الأولى متوسط">السنة الأولى متوسط</option>
+                                    <option value="السنة الثانية متوسط">السنة الثانية متوسط</option>
+                                    <option value="السنة الثالثة متوسط">السنة الثالثة متوسط</option>
+                                    <option value="السنة الرابعة متوسط">السنة الرابعة متوسط (BEM)</option>
+                                    <option value="السنة الأولى ثانوي">السنة الأولى ثانوي</option>
+                                    <option value="السنة الثانية ثانوي">السنة الثانية ثانوي</option>
+                                    <option value="السنة الثالثة ثانوي" selected>السنة الثالثة ثانوي (BAC)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">الشعبة</label>
+                                <select id="tea-stream" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">المادة</label>
+                                <select id="tea-subject" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                    <option value="الرياضيات">الرياضيات</option>
+                                    <option value="العلوم الطبيعية والحياة">العلوم الطبيعية والحياة</option>
+                                    <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                                    <option value="اللغة العربية وآدابها">اللغة العربية وآدابها</option>
+                                    <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                    <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                    <option value="التاريخ والجغرافيا">التاريخ والجغرافيا</option>
+                                    <option value="العلوم الإسلامية">العلوم الإسلامية</option>
+                                    <option value="الفلسفة">الفلسفة</option>
+                                    <option value="التسيير المحاسبي والمالي">التسيير المحاسبي والمالي</option>
+                                    <option value="الاقتصاد والمناجمنت">الاقتصاد والمناجمنت</option>
+                                    <option value="القانون">القانون</option>
+                                    <option value="الهندسة (مدنية/ميكانيكية/كهربائية)">الهندسة</option>
+                                    <option value="مواد التحضيري والابتدائي">مواد التحضيري والابتدائي</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Teaching Methods Grid -->
+                        <div>
+                            <label class="block text-xs font-bold text-gold-royal mb-2">
+                                <i class="fa-solid fa-laptop-file ml-1"></i> اختر وسيلة تقديم الدرس:
+                            </label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                <button type="button" onclick="pickTeachingMethod('Zoom', this)" class="t-method-btn flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-gold bg-gold/20 text-gold-royal transition">
+                                    <i class="fa-solid fa-video"></i> Zoom
+                                </button>
+                                <button type="button" onclick="pickTeachingMethod('Telegram', this)" class="t-method-btn flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:border-turquoise-400 transition">
+                                    <i class="fa-brands fa-telegram text-sky-400"></i> Telegram
+                                </button>
+                                <button type="button" onclick="pickTeachingMethod('Google Meet', this)" class="t-method-btn flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:border-turquoise-400 transition">
+                                    <i class="fa-solid fa-camera-retro text-emerald-400"></i> Google Meet
+                                </button>
+                                <button type="button" onclick="pickTeachingMethod('YouTube', this)" class="t-method-btn flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:border-turquoise-400 transition">
+                                    <i class="fa-brands fa-youtube text-red-500"></i> YouTube
+                                </button>
+                                <button type="button" onclick="pickTeachingMethod('WhatsApp', this)" class="t-method-btn flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:border-turquoise-400 transition">
+                                    <i class="fa-brands fa-whatsapp text-green-400"></i> WhatsApp
+                                </button>
+                                <button type="button" onclick="pickTeachingMethod('دروس مسجلة', this)" class="t-method-btn flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-slate-700 bg-slate-900 text-slate-300 hover:border-turquoise-400 transition">
+                                    <i class="fa-solid fa-film text-purple-400"></i> دروس مسجلة
+                                </button>
+                            </div>
+                            <input type="hidden" id="tea-method-val" value="Zoom">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">عنوان الحصة / الدرس</label>
+                                <input type="text" id="tea-title-input" placeholder="مثال: مراجعة شاملة في الدوال" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">رابط الحصة (<span id="tea-method-span" class="text-gold-royal">Zoom</span>)</label>
+                                <input type="url" id="tea-link-input" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex-grow">
+                                <label class="block text-xs font-bold text-turquoise-300 mb-1">
+                                    <i class="fa-solid fa-file-arrow-up ml-1"></i> تحميل الملفات والوثائق من الهاتف أو الحاسوب:
+                                </label>
+                                <input type="file" id="tea-doc-file" class="text-xs text-slate-300 file:ml-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-turquoise-700 file:text-white">
+                            </div>
+                            <label class="flex items-center gap-2 text-xs text-gold-royal font-bold cursor-pointer">
+                                <input type="checkbox" id="tea-permit-dl" checked class="w-4 h-4 accent-gold">
+                                السماح للتلاميذ والأولياء بالتحميل
+                            </label>
+                        </div>
+
+                        <button onclick="createLessonPost()" class="w-full py-3 turquoise-gradient hover:opacity-95 text-white font-black rounded-xl text-xs shadow-lg transition">
+                            <i class="fa-solid fa-paper-plane ml-1"></i> نشر الدرس وإرساله آنياً للتلاميذ والأولياء
+                        </button>
+                    </div>
+
+                    <!-- Student Honors & Published Lessons (5 Cols) -->
+                    <div class="lg:col-span-5 space-y-5">
+                        <div class="glass-card p-5 rounded-2xl border border-gold/40 space-y-3">
+                            <h3 class="font-bold text-gold-royal text-sm border-b border-slate-700 pb-2">
+                                <i class="fa-solid fa-award ml-1"></i> زر تقديم الشهادات والتكريمات للتلاميذ
+                            </h3>
+                            <input type="text" id="tea-cert-student" placeholder="الاسم الكامل للتلميذ المتفوق" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <input type="text" id="tea-cert-reason" placeholder="سبب التكريم (مثال: المرتبة الأولى في الفرض)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <button onclick="grantStudentCert()" class="w-full py-2.5 royal-gold-gradient text-darknavy font-black rounded-xl text-xs shadow">
+                                <i class="fa-solid fa-certificate ml-1"></i> إصدار شهادة تقدير وتكريم للتلميذ
+                            </button>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-2xl border border-slate-700 space-y-3">
+                            <h3 class="font-bold text-turquoise-400 text-sm border-b border-slate-700 pb-2">
+                                <i class="fa-solid fa-folder-open ml-1"></i> الدروس المنشورة حالياً (<span id="tea-lessons-num">3</span>)
+                            </h3>
+                            <div id="tea-published-list" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: DIRECTOR / ADMIN PORTAL ================= -->
+        <section id="panel-admin" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 royal-gold-border">
+                <div class="flex flex-wrap justify-between items-center border-b border-slate-700/80 pb-4 mb-6 gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-gold-royal flex items-center">
+                            <i class="fa-solid fa-crown ml-2 text-turquoise-400"></i> بوابة مدير المنصة والتحكم المطلق
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-0.5">تعديل CCP وبريدي موب، تسعير الأقسام، تغيير الرقم السري، إدارة 3 مشرفين (أدمن)، وتكريم الأساتذة.</p>
+                    </div>
+                    <span class="px-3 py-1.5 rounded-xl bg-gold/20 border border-gold/40 text-gold-royal text-xs font-bold">
+                        صلاحيات الإدارة العليا
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Col 1: Admin CCP, BaridiMob & Password -->
+                    <div class="glass-card p-5 rounded-2xl border border-gold/40 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                            <h3 class="font-bold text-gold-royal text-sm">
+                                <i class="fa-solid fa-building-columns ml-1 text-turquoise-400"></i> إدراج وتغيير CCP وبريدي موب الإدارة
+                            </h3>
+                            <span class="text-[10px] bg-gold/20 text-gold-royal px-2 py-0.5 rounded-full font-bold">تحديث فوري</span>
+                        </div>
+                        <div class="bg-slate-900/70 p-3.5 rounded-2xl border border-gold/30 space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-200 mb-1">رقم CCP الإدارة (الحساب البريدي الجاري)</label>
+                                <input type="text" id="adm-ccp-field" value="0012345678 المفتاح 45" placeholder="أدخل رقم CCP الإدارة والمفتاح" class="w-full bg-darknavy border border-slate-700 rounded-xl px-3 py-2 text-xs text-gold-royal font-bold focus:border-gold focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-200 mb-1">رقم بريدي موب الإدارة (RIP BaridiMob)</label>
+                                <input type="text" id="adm-baridi-field" value="00799999001234567845" placeholder="أدخل رقم بريدي موب RIP" class="w-full bg-darknavy border border-slate-700 rounded-xl px-3 py-2 text-xs text-turquoise-300 font-bold focus:border-turquoise-400 focus:outline-none">
+                            </div>
+                            <button onclick="savePlatformBanking()" class="w-full py-2.5 royal-gold-gradient text-darknavy font-black rounded-xl text-xs shadow-lg hover:opacity-95 transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>حفظ وتحديث بيانات الدفع</span>
+                            </button>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-800 space-y-2.5">
+                            <h4 class="font-bold text-gold-royal text-xs"><i class="fa-solid fa-key ml-1"></i> زر تغيير الرقم السري للإدارة</h4>
+                            <input type="password" id="adm-new-pw1" placeholder="الرقم السري الجديد" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <input type="password" id="adm-new-pw2" placeholder="تأكيد الرقم السري الجديد" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <button onclick="changeDirectorPassword()" class="w-full py-2 turquoise-gradient text-white font-bold rounded-xl text-xs">
+                                <i class="fa-solid fa-lock ml-1"></i> حفظ الرقم السري الجديد
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Col 2: Section Prices & Honor Teachers -->
+                    <div class="glass-card p-5 rounded-2xl border border-slate-700 space-y-4">
+                        <h3 class="font-bold text-turquoise-400 text-sm border-b border-slate-700 pb-2">
+                            <i class="fa-solid fa-tags ml-1"></i> التحكم في أسعار أنواع الأقسام الثلاثة
+                        </h3>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">سعر القسم الخاص الفردي (1 تلميذ) - دج</label>
+                            <input type="number" id="adm-p-private" value="6000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">سعر قسم المجموعة (8 إلى 10 تلاميذ) - دج</label>
+                            <input type="number" id="adm-p-small" value="3500" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">سعر القسم الجماعي (عدد غير محدود) - دج</label>
+                            <input type="number" id="adm-p-group" value="1800" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <button onclick="applySectionPrices()" class="w-full py-2.5 turquoise-gradient text-white font-bold rounded-xl text-xs shadow">
+                            <i class="fa-solid fa-check-double ml-1"></i> تطبيق الأسعار الجديدة فوراً
+                        </button>
+
+                        <div class="pt-3 border-t border-slate-800 space-y-2.5">
+                            <h4 class="font-bold text-gold-royal text-xs"><i class="fa-solid fa-award ml-1"></i> زر تكريم المدير للأساتذة</h4>
+                            <input type="text" id="adm-honor-tea-name" placeholder="اسم الأستاذ المراد تكريمه" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <button onclick="grantTeacherHonor()" class="w-full py-2 royal-gold-gradient text-darknavy font-black rounded-xl text-xs shadow">
+                                <i class="fa-solid fa-certificate ml-1"></i> إصدار شهادة شرف وتقدير للأستاذ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Col 3: Manage 3 Admins -->
+                    <div class="glass-card p-5 rounded-2xl border border-slate-700 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <h3 class="font-bold text-turquoise-400 text-sm">
+                                <i class="fa-solid fa-user-tie ml-1"></i> إدارة المشرفين (العدد 3 أدمن)
+                            </h3>
+                            <span id="adm-counter-tag" class="px-2.5 py-0.5 rounded-full text-[11px] bg-gold/20 text-gold-royal font-bold">3 / 3</span>
+                        </div>
+
+                        <div id="adm-members-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+
+                        <div class="pt-3 border-t border-slate-800 space-y-2">
+                            <input type="text" id="adm-add-name" placeholder="اسم الأدمن الجديد" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <input type="email" id="adm-add-email" placeholder="البريد الإلكتروني للأدمن" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <button onclick="addNewAdmin()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-gold-royal font-bold rounded-xl text-xs border border-gold/40 transition">
+                                <i class="fa-solid fa-user-plus ml-1"></i> إضافة أدمن جديد (الحد الأقصى 3)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW ADMIN SECTION: Payment Receipts Review & Automated 70%/30% Allocation -->
+                <div class="mt-6 glass-card p-5 sm:p-6 rounded-3xl border-2 border-gold/50 bg-slate-900/80 space-y-4">
+                    <div class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-3 gap-3">
+                        <div>
+                            <h3 class="text-base sm:text-lg font-black text-gold-royal flex items-center">
+                                <i class="fa-solid fa-file-invoice-dollar ml-2 text-turquoise-400"></i> مراجعة وصلات الدفع وتفعيل الاشتراكات الواردة
+                            </h3>
+                            <p class="text-xs text-slate-300 mt-0.5">عند اعتماد أي وصل، يُفعَّل اشتراك التلميذ فوراً وتُوزّع المبالغ آلياً: <strong class="text-turquoise-300">70% لخزينة المنصة</strong> و<strong class="text-gold-royal">30% كرصيد مؤكد للأستاذ</strong>.</p>
+                        </div>
+
+                        <!-- Live Treasury & Teacher Split Summary -->
+                        <div class="flex flex-wrap items-center gap-2 text-xs">
+                            <div class="bg-darknavy px-3 py-2 rounded-xl border border-turquoise-500/40">
+                                <span class="text-slate-400 block text-[10px]">خزينة المنصة الصافية (70%)</span>
+                                <strong id="adm-treasury-70" class="text-turquoise-400 font-black">4,200 دج</strong>
+                            </div>
+                            <div class="bg-darknavy px-3 py-2 rounded-xl border border-gold/50">
+                                <span class="text-slate-400 block text-[10px]">رصيد أرباح الأستاذ المؤكدة (30%)</span>
+                                <strong id="adm-teacher-30" class="text-gold-royal font-black">1,800 دج</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Receipts Table / Cards -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-darknavy text-gold-royal border-b border-gold/30">
+                                    <th class="p-3 rounded-tr-xl">اسم التلميذ</th>
+                                    <th class="p-3">المستوى / الشعبة / المادة</th>
+                                    <th class="p-3">نوع القسم</th>
+                                    <th class="p-3">المبلغ</th>
+                                    <th class="p-3">الطريقة والمرجع</th>
+                                    <th class="p-3">صورة الوصل</th>
+                                    <th class="p-3">الحالة</th>
+                                    <th class="p-3 rounded-tl-xl text-center">إجراء الإدارة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adm-receipts-tbody" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: SECTION TYPE INTERACTIVE PANEL (3 SECTIONS) ================= -->
+        <section id="panel-sections" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 royal-gold-border">
+                <div class="flex flex-wrap justify-between items-center border-b border-slate-700/80 pb-4 mb-6 gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-gold-royal flex items-center">
+                            <i class="fa-solid fa-layer-group ml-2 text-turquoise-400"></i> اختيار نوع القسم الدراسي (الأقسام الثلاثة)
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-0.5">اختر نوع القسم المناسب؛ ينعكس اختيارك مباشرة على السعر والسعة في بوابات التلاميذ والأولياء والأساتذة.</p>
+                    </div>
+                    <span id="sec-panel-current" class="px-3 py-1.5 rounded-xl bg-gold/20 border border-gold/40 text-gold-royal text-xs font-bold">
+                        القسم المختار: قسم خاص فردي
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Section 1: Private Individual -->
+                    <div id="sec-card-1" onclick="setGlobalSectionType('قسم خاص فردي')" class="glass-card p-6 rounded-3xl border-2 border-gold bg-gold/10 cursor-pointer hover:scale-[1.02] transition flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div class="w-12 h-12 rounded-2xl royal-gold-gradient text-darknavy flex items-center justify-center text-xl font-black shadow">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-black bg-gold/20 text-gold-royal border border-gold/40">1 تلميذ فقط</span>
+                            </div>
+                            <h3 class="text-lg font-black text-white">1. قسم خاص فردي</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                حصة فردية خاصة ومباشرة بين الأستاذ وتلميذ واحد فقط، مع متابعة مركزة بنسبة 100% وتكييف البرنامج حسب مستوى التلميذ.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-700/80 flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">الاشتراك الشهري</span>
+                                <span id="sec-card-price-1" class="text-xl font-black text-gold-royal">6,000 دج</span>
+                            </div>
+                            <span class="px-3 py-1.5 royal-gold-gradient text-darknavy rounded-xl text-xs font-black">اختيار القسم</span>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Small Group (8 to 10 students) -->
+                    <div id="sec-card-2" onclick="setGlobalSectionType('قسم مجموعة مصغرة (8-10 تلاميذ)')" class="glass-card p-6 rounded-3xl border border-slate-700 hover:border-turquoise-400 cursor-pointer hover:scale-[1.02] transition flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div class="w-12 h-12 rounded-2xl turquoise-gradient text-white flex items-center justify-center text-xl font-black shadow">
+                                    <i class="fa-solid fa-user-group"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-black bg-turquoise-500/20 text-turquoise-300 border border-turquoise-500/40">من 8 إلى 10 تلاميذ</span>
+                            </div>
+                            <h3 class="text-lg font-black text-white">2. قسم مجموعة مصغرة</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                قسم تفاعلي يضم مجموعة قليلة تتراوح بين 8 إلى 10 تلاميذ كحد أقصى، يضمن النقاش المباشر وحل التمارين الجماعي.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-700/80 flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">الاشتراك الشهري</span>
+                                <span id="sec-card-price-2" class="text-xl font-black text-turquoise-400">3,500 دج</span>
+                            </div>
+                            <span class="px-3 py-1.5 turquoise-gradient text-white rounded-xl text-xs font-black">اختيار القسم</span>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Unlimited Group -->
+                    <div id="sec-card-3" onclick="setGlobalSectionType('قسم جماعي (عدد غير محدود)')" class="glass-card p-6 rounded-3xl border border-slate-700 hover:border-gold cursor-pointer hover:scale-[1.02] transition flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-gold/50 text-gold-royal flex items-center justify-center text-xl font-black shadow">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-black bg-slate-800 text-gold-royal border border-gold/30">عدد غير محدود</span>
+                            </div>
+                            <h3 class="text-lg font-black text-white">3. قسم جماعي مفتوح</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                قسم جماعي يستوعب عدداً غير محدود من التلاميذ بسعر اقتصادي، يشمل البث المباشر والتسجيلات والملخصات الشاملة.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-700/80 flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">الاشتراك الشهري</span>
+                                <span id="sec-card-price-3" class="text-xl font-black text-gold-royal">1,800 دج</span>
+                            </div>
+                            <span class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-gold-royal border border-gold/40 rounded-xl text-xs font-black">اختيار القسم</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!-- Floating Royal WhatsApp Direct Chat Button -->
+    <a href="https://wa.me/213563558678?text=السلام%20عليكم%20منصة%20النبراس%20التعليمية%20مع%20الأستاذة%20ليلى" target="_blank" rel="noopener noreferrer" aria-label="تواصل مباشر عبر واتساب الإدارة 0563558678" class="fixed bottom-5 left-5 z-50 flex items-center gap-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white px-4 py-3 rounded-full border-2 border-gold shadow-2xl transition-transform hover:scale-105 group">
+        <div class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-lg">
+            <i class="fa-brands fa-whatsapp text-white"></i>
+        </div>
+        <div class="text-right leading-tight">
+            <span class="block text-[10px] text-gold-light font-bold">واتساب الإدارة المباشر</span>
+            <span class="block text-xs font-black tracking-wide" dir="ltr">0563558678</span>
+        </div>
+    </a>
+
+    <!-- Footer (Complete Copyrights & Contact, No Ministry Text) -->
+    <footer class="bg-[#040a14] border-t border-gold/30 pt-8 pb-6 mt-12 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="space-y-2">
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <div class="w-8 h-8 rounded-xl royal-gold-gradient flex items-center justify-center text-darknavy font-black">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <h4 class="font-black text-gold-royal text-sm">منصة النبراس التعليمية مع الأستاذة ليلى</h4>
+                </div>
+                <p class="text-[11px] leading-relaxed">
+                    منصة تعليمية رقمية متكاملة تجمع التلاميذ والأولياء والأساتذة والإدارة في بيئة تفاعلية مؤمنة بالكامل.
+                </p>
+            </div>
+
+            <div class="space-y-1.5">
+                <h4 class="font-bold text-turquoise-400 text-xs border-b border-slate-800 pb-1">بيانات الحساب البريدي والتواصل المباشر</h4>
+                <p class="text-[11px]"><i class="fa-solid fa-building-columns text-gold ml-1"></i> رقم CCP الإدارة: <strong id="footer-ccp-txt" class="text-slate-200">0012345678 المفتاح 45</strong></p>
+                <p class="text-[11px]"><i class="fa-solid fa-mobile-screen-button text-turquoise-400 ml-1"></i> بريدي موب الإدارة: <strong id="footer-baridi-txt" class="text-slate-200">00799999001234567845</strong></p>
+                <p class="text-[11px]">
+                    <a href="https://wa.me/213563558678" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-bold">
+                        <i class="fa-brands fa-whatsapp text-sm"></i> واتساب الإدارة المباشر: <span dir="ltr">0563558678</span>
+                    </a>
+                </p>
+            </div>
+
+            <div class="space-y-1.5">
+                <h4 class="font-bold text-turquoise-400 text-xs border-b border-slate-800 pb-1">الحماية السيبرانية والبث الفوري</h4>
+                <p class="text-[11px]"><i class="fa-solid fa-shield-halved text-emerald-400 ml-1"></i> حماية كاملة ضد الاختراقات وتشفير البيانات</p>
+                <p class="text-[11px]"><i class="fa-solid fa-bolt text-gold ml-1"></i> وصول آني للدروس والوثائق المصرح بها</p>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-3 text-[11px]">
+            <p>جميع الحقوق محفوظة لـ <strong>منصة النبراس التعليمية مع الأستاذة ليلى</strong> © 2026.</p>
+            <div class="flex gap-4">
+                <a href="https://wa.me/213563558678" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 font-bold transition">واتساب: 0563558678</a>
+                <a href="javascript:void(0)" onclick="showToast('سياسة الخصوصية وحماية بيانات المشتركين مفعّلة.')" class="hover:text-gold-royal transition">سياسة الخصوصية</a>
+                <a href="javascript:void(0)" onclick="showToast('شروط الاستخدام الأكاديمي لمنصة النبراس.')" class="hover:text-gold-royal transition">شروط الاستخدام</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Roster Attendance Modal -->
+    <div id="roster-modal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-3xl p-5 border border-gold space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h4 class="font-black text-gold-royal text-sm"><i class="fa-solid fa-clipboard-user ml-1"></i> قائمة الحضور والغياب المباشرة</h4>
+                <button onclick="toggleRosterModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="roster-modal-body" class="space-y-2 max-h-64 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- Receipt Image Preview Modal -->
+    <div id="receipt-preview-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-card max-w-lg w-full rounded-3xl p-5 border-2 border-gold space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h4 id="modal-rec-title" class="font-black text-gold-royal text-sm"><i class="fa-solid fa-receipt ml-1 text-turquoise-400"></i> معاينة وصل الدفع</h4>
+                <button onclick="closeReceiptModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="bg-darknavy p-3 rounded-2xl border border-slate-700 flex flex-col items-center">
+                <img id="modal-rec-img" src="" alt="وصل الدفع" class="max-h-72 rounded-xl object-contain border border-gold/40">
+                <p id="modal-rec-meta" class="text-xs text-slate-300 mt-3 text-center"></p>
+            </div>
+            <div class="flex justify-end">
+                <button onclick="closeReceiptModal()" class="px-5 py-2 royal-gold-gradient text-darknavy font-black rounded-xl text-xs">إغلاق المعاينة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // Educational Streams for All Levels (Preparatory to 3rd Year Secondary)
+        const levelStreams = {
+            "التحضيري": ["القسم التحضيري العام", "تربية تحضيرية مبكرة"],
+            "السنة الأولى ابتدائي": ["التعليم الابتدائي العام"],
+            "السنة الثانية ابتدائي": ["التعليم الابتدائي العام"],
+            "السنة الثالثة ابتدائي": ["التعليم الابتدائي العام"],
+            "السنة الرابعة ابتدائي": ["التعليم الابتدائي العام"],
+            "السنة الخامسة ابتدائي": ["التعليم الابتدائي العام"],
+            "السنة الأولى متوسط": ["التعليم المتوسط العام"],
+            "السنة الثانية متوسط": ["التعليم المتوسط العام"],
+            "السنة الثالثة متوسط": ["التعليم المتوسط العام"],
+            "السنة الرابعة متوسط": ["التعليم المتوسط العام (شهادة BEM)"],
+            "السنة الأولى ثانوي": ["جذع مشترك علوم وتكنولوجيا", "جذع مشترك آداب وفلسفة"],
+            "السنة الثانية ثانوي": ["علوم تجريبية", "رياضيات", "تقني رياضي", "تسيير واقتصاد", "آداب وفلسفة", "لغات أجنبية"],
+            "السنة الثالثة ثانوي": ["علوم تجريبية (بكالوريا)", "رياضيات (بكالوريا)", "تقني رياضي (بكالوريا)", "تسيير واقتصاد (بكالوريا)", "آداب وفلسفة (بكالوريا)", "لغات أجنبية (بكالوريا)"]
+        };
+
+        // Central Platform State
+        const appState = {
+            ccp: "0012345678 المفتاح 45",
+            baridi: "00799999001234567845",
+            adminPass: "Nibras2026",
+            teacherCcp: "0098765432 المفتاح 12",
+            activeSection: "قسم خاص فردي",
+            prices: {
+                "قسم خاص فردي": 6000,
+                "قسم مجموعة مصغرة (8-10 تلاميذ)": 3500,
+                "قسم جماعي (عدد غير محدود)": 1800
+            },
+            sectionsMeta: {
+                "قسم خاص فردي": { reg: 1, pres: 1, max: 1, desc: "تلميذ واحد فقط (1/1)" },
+                "قسم مجموعة مصغرة (8-10 تلاميذ)": { reg: 9, pres: 8, max: 10, desc: "مجموعة من 8 إلى 10 تلاميذ" },
+                "قسم جماعي (عدد غير محدود)": { reg: 54, pres: 49, max: Infinity, desc: "عدد غير محدود من التلاميذ" }
+            },
+            admins: [
+                { id: 1, name: "الأستاذة ليلى (المديرة العامة)", email: "leila@nibras.dz" },
+                { id: 2, name: "أ. كريم (مشرف البيداغوجيا)", email: "karim@nibras.dz" },
+                { id: 3, name: "م. سارة (مشرفة الحماية والتقنية)", email: "sara@nibras.dz" }
+            ],
+            roster: [
+                { name: "محمد أمين بن علي", status: "حاضر", time: "15:00" },
+                { name: "ياسمين بوزيد", status: "حاضر", time: "15:01" },
+                { name: "عبد الرحمن قاسمي", status: "غائب", time: "-" },
+                { name: "مريم منصوري", status: "حاضر", time: "14:58" },
+                { name: "آدم شريف", status: "غائب", time: "-" }
+            ],
+            lessons: [
+                {
+                    id: 1,
+                    title: "المراجعة النهائية في الدوال الأسية واللوغاريتمية",
+                    level: "السنة الثالثة ثانوي",
+                    stream: "علوم تجريبية (بكالوريا)",
+                    subject: "الرياضيات",
+                    method: "Zoom",
+                    link: "https://zoom.us",
+                    fileName: "ملخص_الدوال_الأستاذة_ليلى.pdf",
+                    allowDownload: true,
+                    time: "مباشر الآن"
+                },
+                {
+                    id: 2,
+                    title: "تركيب البروتين والإنزيمات - تمارين البكالوريا",
+                    level: "السنة الثالثة ثانوي",
+                    stream: "علوم تجريبية (بكالوريا)",
+                    subject: "العلوم الطبيعية والحياة",
+                    method: "Google Meet",
+                    link: "https://meet.google.com",
+                    fileName: "سلسلة_العلوم_الطبيعية.pdf",
+                    allowDownload: true,
+                    time: "اليوم 17:30"
+                },
+                {
+                    id: 3,
+                    title: "أساسيات القراءة والحساب الذهني الممتع",
+                    level: "التحضيري",
+                    stream: "القسم التحضيري العام",
+                    subject: "مواد التحضيري والابتدائي",
+                    method: "YouTube",
+                    link: "https://youtube.com",
+                    fileName: "كراس_الأنشطة_التحضيري.pdf",
+                    allowDownload: true,
+                    time: "درس مسجل"
+                }
+            ],
+            certificates: [
+                { student: "محمد أمين بن علي", reason: "التفوق والانضباط في مادة الرياضيات", issuer: "الأستاذة ليلى", date: "2026/11/18" },
+                { student: "ياسمين بوزيد", reason: "التميز في حلول تمارين العلوم الطبيعية", issuer: "الأستاذة ليلى", date: "2026/11/12" }
+            ],
+            tempReceiptPreviews: {
+                stu: { url: "", name: "" },
+                par: { url: "", name: "" }
+            },
+            receipts: [
+                {
+                    id: 101,
+                    studentName: "ياسمين بوزيد",
+                    level: "السنة الثالثة ثانوي",
+                    stream: "علوم تجريبية (بكالوريا)",
+                    subject: "الرياضيات",
+                    sectionType: "قسم خاص فردي",
+                    amount: 6000,
+                    method: "BaridiMob",
+                    ref: "BM-884120",
+                    fileName: "recu_baridimob_yasmine.jpg",
+                    previewUrl: "https://placehold.co/480x320/006064/ffd700?text=BaridiMob+Receipt+%23BM-884120+(6000+DZD)",
+                    status: "approved",
+                    date: "2026/11/18"
+                },
+                {
+                    id: 102,
+                    studentName: "محمد أمين بن علي",
+                    level: "السنة الثالثة ثانوي",
+                    stream: "علوم تجريبية (بكالوريا)",
+                    subject: "العلوم الطبيعية والحياة",
+                    sectionType: "قسم مجموعة مصغرة (8-10 تلاميذ)",
+                    amount: 3500,
+                    method: "CCP",
+                    ref: "CCP-559014",
+                    fileName: "recu_ccp_amine.png",
+                    previewUrl: "https://placehold.co/480x320/07111e/00bcd4?text=CCP+Receipt+%23CCP-559014+(3500+DZD)",
+                    status: "pending",
+                    date: "2026/11/19"
+                },
+                {
+                    id: 103,
+                    studentName: "مريم منصوري",
+                    level: "السنة الرابعة متوسط",
+                    stream: "التعليم المتوسط العام (شهادة BEM)",
+                    subject: "اللغة العربية وآدابها",
+                    sectionType: "قسم جماعي (عدد غير محدود)",
+                    amount: 1800,
+                    method: "BaridiMob",
+                    ref: "BM-901344",
+                    fileName: "recu_bem_meriem.jpg",
+                    previewUrl: "https://placehold.co/480x320/004d52/ffd700?text=BaridiMob+Receipt+%23BM-901344+(1800+DZD)",
+                    status: "pending",
+                    date: "2026/11/19"
+                }
+            ]
+        };
+
+        // Initialize on Load
+        window.onload = function () {
+            syncStreams('stu');
+            syncStreams('par');
+            syncStreams('tea');
+            setGlobalSectionType("قسم خاص فردي", true);
+            filterStudentLessons();
+            renderCertificates();
+            updateParentView();
+            renderTeacherLessons();
+            renderAdminList();
+            renderAllReceiptsAndBalances();
+        };
+
+        // Switch Between the 5 Main Tabs
+        function switchTab(tabName) {
+            const tabs = ['student', 'parent', 'teacher', 'admin', 'sections'];
+            tabs.forEach(t => {
+                document.getElementById(`panel-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-card-${t}`);
+                btn.classList.remove('main-icon-active');
+            });
+            document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-card-${tabName}`).classList.add('main-icon-active');
+        }
+
+        // Sync Streams Dropdowns
+        function syncStreams(prefix) {
+            const lvl = document.getElementById(`${prefix}-level`).value;
+            const streamEl = document.getElementById(`${prefix}-stream`);
+            const list = levelStreams[lvl] || ["عام"];
+            streamEl.innerHTML = list.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        // Unified Section Type Updater across all 5 portals
+        function setGlobalSectionType(secName, silent = false) {
+            appState.activeSection = secName;
+            const price = appState.prices[secName] || 1800;
+            const meta = appState.sectionsMeta[secName];
+
+            // Sync dropdowns
+            document.getElementById('stu-section').value = secName;
+            document.getElementById('par-section').value = secName;
+
+            // Update Student & Parent Price displays
+            document.getElementById('stu-price-display').innerText = `${price.toLocaleString()} دج`;
+            document.getElementById('stu-cap-note').innerText = `نظام القسم: ${meta.desc}`;
+            document.getElementById('par-price-display').innerText = `${price.toLocaleString()} دج`;
+            document.getElementById('sec-panel-current').innerText = `القسم المختار: ${secName}`;
+            document.getElementById('nav-active-sec-badge').innerText = `${secName.split('(')[0].trim()} (${price.toLocaleString()} دج)`;
+
+            // Highlight card in Section Type Tab
+            ['sec-card-1', 'sec-card-2', 'sec-card-3'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('border-2', 'border-gold', 'bg-gold/10');
+                el.classList.add('border', 'border-slate-700');
+            });
+            const activeCardId = secName.includes('فردي') ? 'sec-card-1' : (secName.includes('مصغرة') ? 'sec-card-2' : 'sec-card-3');
+            const activeEl = document.getElementById(activeCardId);
+            activeEl.classList.remove('border', 'border-slate-700');
+            activeEl.classList.add('border-2', 'border-gold', 'bg-gold/10');
+
+            // Update Teacher Stats & Revenue
+            refreshTeacherStats();
+
+            if (!silent) {
+                showToast(`تم تفعيل (${secName}) بسعر ${price.toLocaleString()} دج في جميع البوابات.`);
+            }
+        }
+
+        // Student Actions
+        function enrollInSelectedSection() {
+            const sec = appState.activeSection;
+            const meta = appState.sectionsMeta[sec];
+            const price = appState.prices[sec];
+
+            if (meta.max !== Infinity && meta.reg >= meta.max) {
+                return showToast(`عذراً! (${sec}) مكتمل السعة (${meta.max}/${meta.max}). يمكنك اختيار قسم آخر.`);
+            }
+            meta.reg += 1;
+            meta.pres += 1;
+            refreshTeacherStats();
+            showToast(`تم تسجيل التلميذ بنجاح في (${sec}) بسعر ${price.toLocaleString()} دج!`);
+        }
+
+        function filterStudentLessons() {
+            const lvl = document.getElementById('stu-level').value;
+            const sub = document.getElementById('stu-subject').value;
+            document.getElementById('stu-active-filter-tag').innerText = `${lvl} • ${sub}`;
+
+            const filtered = appState.lessons.filter(l => l.level === lvl && (sub === "الكل" || l.subject === sub));
+            const box = document.getElementById('stu-lessons-list');
+
+            if (filtered.length === 0) {
+                box.innerHTML = `<div class="text-center py-8 text-xs text-slate-400 bg-slate-900/60 rounded-2xl">لا توجد دروس منشورة لهذا الاختيار حالياً. اختر "جميع المواد الدراسية" لعرض كل الدروس المتاحة.</div>`;
+                return;
+            }
+
+            box.innerHTML = filtered.map(l => `
+                <div class="bg-slate-900/95 p-4 rounded-2xl border border-slate-700 hover:border-gold/50 transition space-y-2">
+                    <div class="flex flex-wrap justify-between items-start gap-2">
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-turquoise-500/20 text-turquoise-300 border border-turquoise-500/30">${l.method}</span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/15 text-gold-royal mr-1">${l.subject}</span>
+                            <h4 class="text-sm font-bold text-white mt-1.5">${l.title}</h4>
+                        </div>
+                        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg font-bold">${l.time}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">${l.level} — ${l.stream}</p>
+                    <div class="flex flex-wrap justify-between items-center pt-2 border-t border-slate-800 gap-2">
+                        <a href="${l.link}" target="_blank" cl
