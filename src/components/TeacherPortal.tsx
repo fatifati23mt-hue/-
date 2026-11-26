@@ -80,19 +80,31 @@ interface MethodAppMeta {
   openBtnClass: string;
 }
 
-const WHATSAPP_DEFAULT_MESSAGE = encodeURIComponent(
-  'السلام عليكم، حصة عبر منصة النبراس التعليمية — تحت إشراف الأستاذة ليلى'
-);
+const PLATFORM_SHARE_MESSAGE =
+  'السلام عليكم، حصة عبر منصة النبراس التعليمية — تحت إشراف الأستاذة ليلى';
+const WHATSAPP_DEFAULT_MESSAGE = encodeURIComponent(PLATFORM_SHARE_MESSAGE);
 const WHATSAPP_UNIVERSAL_URL = `https://api.whatsapp.com/send?text=${WHATSAPP_DEFAULT_MESSAGE}`;
+
+function getTelegramDefaultLaunchLinks(): { universalUrl: string; androidIntent: string } {
+  const shareUrl =
+    typeof window !== 'undefined' && window.location?.origin
+      ? window.location.origin
+      : 'https://web.telegram.org';
+  const encodedUrl = encodeURIComponent(shareUrl);
+  const encodedText = encodeURIComponent(PLATFORM_SHARE_MESSAGE);
+  const universalUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+  const androidIntent = `intent://msg_url?url=${encodedUrl}&text=${encodedText}#Intent;scheme=tg;package=org.telegram.messenger;S.browser_fallback_url=${encodeURIComponent(universalUrl)};end`;
+  return { universalUrl, androidIntent };
+}
 
 const METHOD_APP_CONFIG: Record<TeachingMethod, MethodAppMeta> = {
   Telegram: {
     arLabel: 'تيليغرام',
-    appUrl: 'https://t.me/',
+    appUrl: `https://t.me/share/url?url=${encodeURIComponent('https://web.telegram.org')}&text=${WHATSAPP_DEFAULT_MESSAGE}`,
     androidPackage: 'org.telegram.messenger',
-    androidDefaultIntent: `intent://t.me/#Intent;scheme=https;package=org.telegram.messenger;S.browser_fallback_url=${encodeURIComponent('https://t.me/')};end`,
-    openAppLabel: 'الدخول لتطبيق تيليغرام مباشرة',
-    placeholder: 'https://t.me/+... رابط قناة أو مجموعة تيليغرام',
+    androidDefaultIntent: `intent://msg_url?url=${encodeURIComponent('https://web.telegram.org')}&text=${WHATSAPP_DEFAULT_MESSAGE}#Intent;scheme=tg;package=org.telegram.messenger;S.browser_fallback_url=${encodeURIComponent(`https://t.me/share/url?url=${encodeURIComponent('https://web.telegram.org')}&text=${WHATSAPP_DEFAULT_MESSAGE}`)};end`,
+    openAppLabel: 'الدخول لتطبيق تيليغرام مباشرة (هاتف / كمبيوتر)',
+    placeholder: 'https://t.me/+... أو @اسم_القناة على تيليغرام',
     openBtnClass:
       'bg-sky-600/25 hover:bg-sky-600/40 text-sky-200 border-sky-400/60 hover:border-sky-300',
   },
@@ -148,9 +160,13 @@ const METHOD_APP_CONFIG: Record<TeachingMethod, MethodAppMeta> = {
   },
 };
 
-function toSafeHttpUrl(raw: string, fallback: string): string {
+function toSafeHttpUrl(raw: string, fallback: string, method?: TeachingMethod): string {
   const trimmed = raw.trim();
   if (!trimmed) return fallback;
+  // Support Telegram @username shorthand (e.g. @al_nibras_math -> https://t.me/al_nibras_math)
+  if (method === 'Telegram' && /^@[a-zA-Z0-9_]{3,64}$/.test(trimmed)) {
+    return `https://t.me/${trimmed.slice(1)}`;
+  }
   const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
   try {
     const parsed = new URL(candidate);
@@ -164,11 +180,17 @@ function toSafeHttpUrl(raw: string, fallback: string): string {
 }
 
 function buildMobileAppLaunchTarget(
+  method: TeachingMethod,
   meta: MethodAppMeta,
   rawEnteredLink: string
 ): { href: string; openInNewTab: boolean } {
   const hasCustomLink = rawEnteredLink.trim().length > 0;
-  const safeHttpsUrl = toSafeHttpUrl(rawEnteredLink, meta.appUrl);
+  const telegramDefaults = method === 'Telegram' ? getTelegramDefaultLaunchLinks() : null;
+  const defaultUniversalUrl = telegramDefaults ? telegramDefaults.universalUrl : meta.appUrl;
+  const defaultAndroidIntent = telegramDefaults
+    ? telegramDefaults.androidIntent
+    : meta.androidDefaultIntent;
+  const safeHttpsUrl = toSafeHttpUrl(rawEnteredLink, defaultUniversalUrl, method);
 
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
     return { href: safeHttpsUrl, openInNewTab: true };
@@ -186,7 +208,7 @@ function buildMobileAppLaunchTarget(
   // with automatic fallback to the official HTTPS universal link if the app is not installed.
   if (isAndroid && !isInIframe) {
     if (!hasCustomLink) {
-      return { href: meta.androidDefaultIntent, openInNewTab: false };
+      return { href: defaultAndroidIntent, openInNewTab: false };
     }
     try {
       const parsed = new URL(safeHttpsUrl);
@@ -195,12 +217,13 @@ function buildMobileAppLaunchTarget(
       const customIntent = `intent://${hostAndPath}#Intent;scheme=${scheme};package=${meta.androidPackage};S.browser_fallback_url=${encodeURIComponent(safeHttpsUrl)};end`;
       return { href: customIntent, openInNewTab: false };
     } catch {
-      return { href: meta.androidDefaultIntent, openInNewTab: false };
+      return { href: defaultAndroidIntent, openInNewTab: false };
     }
   }
 
-  // Inside iframes, on iOS (Universal Links), and on desktop, official HTTPS universal links
-  // opened in a new top-level tab trigger the native phone app cleanly without iframe blocks.
+  // Inside iframes, on iOS (Universal Links), and on desktop (Windows/macOS/Linux Telegram Desktop),
+  // official HTTPS universal links (such as t.me/share/url) opened in a new top-level tab
+  // automatically trigger the native phone or desktop app with a clean web fallback.
   return { href: safeHttpsUrl, openInNewTab: true };
 }
 
@@ -315,6 +338,7 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
       case 'YouTube':
         return <Youtube className="w-3.5 h-3.5" />;
       case 'Telegram':
+        return <Send className="w-3.5 h-3.5" />;
       case 'WhatsApp':
         return <MessageCircle className="w-3.5 h-3.5" />;
       default:
@@ -332,7 +356,12 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
   const setCurrentLink = (nextVal: string) => {
     setMethodLinks((prev) => ({ ...prev, [method]: nextVal }));
   };
-  const directAppTarget = buildMobileAppLaunchTarget(activeMethodMeta, currentLink);
+  const directAppTarget = buildMobileAppLaunchTarget(method, activeMethodMeta, currentLink);
+  const telegramDirectTarget = buildMobileAppLaunchTarget(
+    'Telegram',
+    METHOD_APP_CONFIG.Telegram,
+    methodLinks.Telegram ?? ''
+  );
 
   const handleSendLinkToStudent = async () => {
     const trimmed = currentLink.trim();
@@ -343,7 +372,7 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
       );
       return;
     }
-    const safeLink = toSafeHttpUrl(trimmed, '');
+    const safeLink = toSafeHttpUrl(trimmed, '', method);
     if (!safeLink) {
       onNotify('الرابط المدخل غير صالح. يرجى التأكد من صحة الرابط.', 'warning');
       return;
@@ -385,7 +414,7 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
       onNotify('يرجى إدخال عنوان الحصة أو الدرس قبل النشر.', 'warning');
       return;
     }
-    const cleanLink = toSafeHttpUrl(currentLink, activeMethodMeta.appUrl);
+    const cleanLink = toSafeHttpUrl(currentLink, activeMethodMeta.appUrl, method);
     await onPublishLesson({
       level,
       stream,
@@ -954,17 +983,36 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
               {TEACHING_METHODS.map((m) => {
                 const active = method === m;
                 const meta = METHOD_APP_CONFIG[m];
+                const tileClass = `flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black border transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap ${
+                  active
+                    ? 'border-gold-royal royal-gold-gradient text-darknavy shadow-[0_0_16px_rgba(255,215,0,0.45)]'
+                    : 'border-slate-700 bg-darknavy text-slate-300 hover:border-turquoise-400/60 hover:text-turquoise-200'
+                }`;
+                if (m === 'Telegram') {
+                  return (
+                    <a
+                      key={m}
+                      href={telegramDirectTarget.href}
+                      target={telegramDirectTarget.openInNewTab ? '_blank' : undefined}
+                      rel={telegramDirectTarget.openInNewTab ? 'noopener noreferrer' : undefined}
+                      onClick={() => setMethod('Telegram')}
+                      aria-current={active ? 'true' : undefined}
+                      title="انقر لاختيار تيليغرام والدخول مباشرة إلى تطبيق الهاتف أو الكمبيوتر"
+                      className={tileClass}
+                    >
+                      {methodIcon(m)}
+                      <span>{meta.arLabel}</span>
+                      <ExternalLink className="w-3 h-3 opacity-80" />
+                    </a>
+                  );
+                }
                 return (
                   <button
                     key={m}
                     type="button"
                     onClick={() => setMethod(m)}
                     aria-pressed={active}
-                    className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black border transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap ${
-                      active
-                        ? 'border-gold-royal royal-gold-gradient text-darknavy shadow-[0_0_16px_rgba(255,215,0,0.45)]'
-                        : 'border-slate-700 bg-darknavy text-slate-300 hover:border-turquoise-400/60 hover:text-turquoise-200'
-                    }`}
+                    className={tileClass}
                   >
                     {methodIcon(m)}
                     <span>{m === 'دروس مسجلة' ? m : meta.arLabel}</span>
@@ -977,9 +1025,15 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
             <div className="bg-darknavy/95 p-4 rounded-2xl border-2 border-gold/45 space-y-3 shadow-inner">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-lg royal-gold-gradient text-darknavy flex items-center justify-center shrink-0">
+                  <a
+                    href={directAppTarget.href}
+                    target={directAppTarget.openInNewTab ? '_blank' : undefined}
+                    rel={directAppTarget.openInNewTab ? 'noopener noreferrer' : undefined}
+                    title={activeMethodMeta.openAppLabel}
+                    className="w-8 h-8 rounded-lg royal-gold-gradient text-darknavy flex items-center justify-center shrink-0 hover:brightness-110 transition active:scale-95"
+                  >
                     {methodIcon(method)}
-                  </span>
+                  </a>
                   <div>
                     <h4 className="text-xs font-black text-gold-royal">
                       وسيلة الاتصال المختارة: {activeMethodMeta.arLabel} ({method})
